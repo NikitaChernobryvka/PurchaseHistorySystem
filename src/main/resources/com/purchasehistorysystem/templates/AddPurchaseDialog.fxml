@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns:fx="http://javafx.com/fxml">
+    <Label>Додати покупку</Label>
+
+    <HBox>
+        <Label>Назва: </Label>
+        <TextField promptText="Введіть назву"/>
+    </HBox>
+
+    <HBox>
+        <Label>Категорія: </Label>
+        <ComboBox promptText="Оберіть категорію"/>
+        <Button>+</Button>
+    </HBox>
+
+    <HBox>
+        <Label>Вартість: </Label>
+        <TextField promptText="0"/>
+    </HBox>
+
+    <HBox>
+        <Label>Кількість: </Label>
+        <TextField promptText="1"/>
+    </HBox>
+
+    <HBox>
+        <Button>Скасувати</Button>
+        <Button>Зберегти</Button>
+    </HBox>
+</VBox>
