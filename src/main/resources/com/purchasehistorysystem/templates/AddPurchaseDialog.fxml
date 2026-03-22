@@ -6,31 +6,31 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<VBox xmlns:fx="http://javafx.com/fxml">
-    <Label>Додати покупку</Label>
+<VBox xmlns:fx="http://javafx.com/fxml" stylesheets="@../styles/AddPurchaseDialogStyle.css" styleClass="vbox" spacing="15">
+    <Label alignment="CENTER" styleClass="title">Додати покупку</Label>
 
-    <HBox>
+    <HBox spacing="15">
         <Label>Назва: </Label>
         <TextField promptText="Введіть назву"/>
     </HBox>
 
-    <HBox>
+    <HBox spacing="15">
         <Label>Категорія: </Label>
         <ComboBox promptText="Оберіть категорію"/>
         <Button>+</Button>
     </HBox>
 
-    <HBox>
+    <HBox spacing="15">
         <Label>Вартість: </Label>
         <TextField promptText="0"/>
     </HBox>
 
-    <HBox>
+    <HBox spacing="15">
         <Label>Кількість: </Label>
         <TextField promptText="1"/>
     </HBox>
 
-    <HBox>
+    <HBox spacing="15" styleClass="hbox-buttons" alignment="CENTER">
         <Button>Скасувати</Button>
         <Button>Зберегти</Button>
     </HBox>

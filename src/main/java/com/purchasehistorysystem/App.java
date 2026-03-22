@@ -15,8 +15,8 @@ public class App extends Application {
         Scene scene = new Scene(root);
         stage.setTitle("Історія покупок");
         stage.setScene(scene);
-        stage.setWidth(500);
-        stage.setHeight(500);
+        stage.setWidth(1550);
+        stage.setHeight(825);
         stage.show();
     }
 }
