@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import javafx.geometry.Insets?>
+<BorderPane xmlns:fx="http//javafx.com/fxml"  stylesheets="@../styles/MainViewStyle.css">
+    <top>
+        <VBox>
+            <Label styleClass="title" alignment="CENTER">Історія покупок</Label>
+            <HBox spacing="50" alignment="CENTER_LEFT" styleClass="hbox-top">
+                <ComboBox promptText="Категорія"/>
+                <DatePicker promptText="Введіть першу дату"/>
+                <DatePicker promptText="Введіть другу дату"/>
+            </HBox>
+        </VBox>
+    </top>
+    <center>
+        <ScrollPane fitToWidth="true">
+            <VBox/>
+        </ScrollPane>
+    </center>
+    <bottom>
+        <HBox alignment="CENTER" spacing="30" styleClass="hbox-bottom">
+            <Button>Додати</Button>
+            <Button>Видалити</Button>
+        </HBox>
+    </bottom>
+</BorderPane>

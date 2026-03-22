@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns:fx="http://javafx.com/fxml" stylesheets="@../styles/AddCategoryDialogStyle.css" styleClass="vbox" spacing="15">
+    <Label styleClass="title" alignment="CENTER">Додати категорію</Label>
+
+    <HBox spacing="15">
+        <Label>Назва: </Label>
+        <TextField promptText="Введіть назву"/>
+    </HBox>
+
+    <HBox spacing="15">
+        <Label>Іконка: </Label>
+        <ComboBox promptText="Оберіть іконку"/>
+        <Button>Завантажити нову</Button>
+    </HBox>
+
+    <HBox spacing="15" styleClass="hbox-buttons" alignment="CENTER">
+        <Button>Скасувати</Button>
+        <Button>Зберегти</Button>
+    </HBox>
+</VBox>

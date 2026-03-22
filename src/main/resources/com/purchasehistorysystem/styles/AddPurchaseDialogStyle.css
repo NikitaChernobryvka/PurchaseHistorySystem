@@ -1,0 +1,52 @@
+.vbox {
+    -fx-padding: 0 0 0 10px;
+}
+
+.label {
+    -fx-font-size: 15px;
+}
+
+.text-field {
+    -fx-pref-height: 20px;
+    -fx-pref-width: 220px;
+}
+
+.hbox {
+    -fx-padding: 5px 0 5px 0;
+}
+
+.button {
+    -fx-font-size: 15px;
+    -fx-background-color: #4CAF50;
+}
+
+.hbox-buttons {
+    -fx-padding: 0 0 15px 0;
+}
+
+.button:hover {
+    -fx-background-color: #43A047;
+}
+
+.button:pressed {
+    -fx-background-color: #388E3C;
+}
+
+.title {
+    -fx-max-width: infinity;
+    -fx-font-weight: bold;
+    -fx-padding: 0 0 5px 0;
+}
+
+.combo-box {
+    -fx-background-color: #4CAF50;
+    -fx-font-size: 15px;
+}
+
+.combo-box:hover {
+    -fx-background-color: #43A047;
+}
+
+.combo-box:pressed {
+    -fx-background-color: #388E3C;
+}
