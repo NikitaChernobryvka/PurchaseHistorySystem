@@ -19,7 +19,7 @@
     <HBox spacing="15">
         <Label>Категорія: </Label>
         <ComboBox promptText="Оберіть категорію" fx:id="categoryComboBox"/>
-        <Button>+</Button>
+        <Button onAction="#onAddCategoryButton">+</Button>
     </HBox>
 
     <HBox spacing="15">
