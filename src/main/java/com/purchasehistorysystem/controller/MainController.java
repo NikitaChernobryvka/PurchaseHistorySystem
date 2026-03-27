@@ -19,6 +19,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.time.LocalDate;
@@ -111,9 +112,23 @@ public class MainController {
 
                 String path = purchase.getCategory().getIconPath();
                 if (path != null || !path.isEmpty()) {
-                    InputStream inputStream = getClass().getResourceAsStream(path);
-                    if (inputStream != null) {
-                        Image image = new Image(inputStream);
+                    Image image = null;
+
+                    File fileOnDisk = new File("src/main/resources" + path);
+
+                    if (fileOnDisk.exists()) {
+                        image = new Image(fileOnDisk.toURI().toString());
+                    }
+
+                    else {
+                        InputStream inputStream = getClass().getResourceAsStream(path);
+                        if (inputStream != null) {
+                            image = new Image(inputStream);
+                        }
+
+                    }
+
+                    if (image != null) {
                         ImageView imageView = new ImageView(image);
 
                         imageView.setFitHeight(20);
