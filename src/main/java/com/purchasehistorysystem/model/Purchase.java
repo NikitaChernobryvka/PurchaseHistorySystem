@@ -10,10 +10,6 @@ public class Purchase {
     private int amount;
     private LocalDate date;
 
-    public Purchase() {
-
-    }
-
     public Purchase(int id, String name, Category category, double price, int amount, LocalDate date) {
         this.id = id;
         this.name = name;
