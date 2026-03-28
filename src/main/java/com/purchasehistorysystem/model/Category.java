@@ -5,10 +5,6 @@ public class Category {
     private String name;
     private String iconPath;
 
-    public Category() {
-
-    }
-
     public Category(int id, String name, String iconPath) {
         this.id = id;
         this.name = name;
@@ -37,6 +33,11 @@ public class Category {
 
     public void setIconPath(String iconPath) {
         this.iconPath = iconPath;
+    }
+
+    @Override
+    public String toString() {
+        return name;
     }
 }
 

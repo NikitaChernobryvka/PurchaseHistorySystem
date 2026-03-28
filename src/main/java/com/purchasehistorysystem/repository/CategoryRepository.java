@@ -11,6 +11,8 @@ public class CategoryRepository {
     public List<Category> getAllCategories() throws SQLException {
         List<Category> categories = new ArrayList<>();
 
+        categories.add(new Category(0, "Всі", null));
+
         String sqlQuery = "SELECT * FROM categories";
 
         try (

@@ -72,3 +72,35 @@
 .combo-box:pressed {
     -fx-background-color: #388E3C;
 }
+
+.month-header {
+    -fx-background-color: #F0F0F0;
+    -fx-padding: 10px;
+    -fx-border-color: black;
+    -fx-border-width: 0 0 1px 0;
+    -fx-spacing: 50px;
+}
+
+.month-header .label {
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-alignment: CENTER_LEFT;
+}
+
+.purchase-row {
+    -fx-padding: 10px;
+    -fx-spacing: 20px;
+    -fx-border-color: black;
+    -fx-border-width: 0 0 1px 0;
+    -fx-alignment: CENTER_LEFT;
+    -fx-font-size: 18px;
+}
+
+.purchase-row:hover {
+    -fx-background-color: #F0F0F0;
+}
+
+.category-container {
+    -fx-padding: 5px;
+    -fx-spacing: 15px;
+}

@@ -7,4 +7,7 @@ module com.purchasehistorysystem {
 
     opens com.purchasehistorysystem to javafx.fxml;
     exports com.purchasehistorysystem;
+
+    opens com.purchasehistorysystem.controller to javafx.fxml;
+    exports com.purchasehistorysystem.controller;
 }

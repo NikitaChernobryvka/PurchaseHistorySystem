@@ -6,32 +6,34 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<VBox xmlns:fx="http://javafx.com/fxml" stylesheets="@../styles/AddPurchaseDialogStyle.css" styleClass="vbox" spacing="15">
+<VBox xmlns:fx="http://javafx.com/fxml" stylesheets="@../styles/AddPurchaseDialogStyle.css" styleClass="vbox" spacing="15"
+      fx:controller="com.purchasehistorysystem.controller.AddPurchaseController">
+
     <Label alignment="CENTER" styleClass="title">Додати покупку</Label>
 
     <HBox spacing="15">
         <Label>Назва: </Label>
-        <TextField promptText="Введіть назву"/>
+        <TextField promptText="Введіть назву" fx:id="nameField"/>
     </HBox>
 
     <HBox spacing="15">
         <Label>Категорія: </Label>
-        <ComboBox promptText="Оберіть категорію"/>
-        <Button>+</Button>
+        <ComboBox promptText="Оберіть категорію" fx:id="categoryComboBox"/>
+        <Button onAction="#onAddCategoryButton">+</Button>
     </HBox>
 
     <HBox spacing="15">
         <Label>Вартість: </Label>
-        <TextField promptText="0"/>
+        <TextField promptText="0" fx:id="priceField"/>
     </HBox>
 
     <HBox spacing="15">
         <Label>Кількість: </Label>
-        <TextField promptText="1"/>
+        <TextField promptText="1" fx:id="amountField"/>
     </HBox>
 
     <HBox spacing="15" styleClass="hbox-buttons" alignment="CENTER">
-        <Button>Скасувати</Button>
-        <Button>Зберегти</Button>
+        <Button onAction="#onCancelButton">Скасувати</Button>
+        <Button onAction="#onSaveButton">Зберегти</Button>
     </HBox>
 </VBox>

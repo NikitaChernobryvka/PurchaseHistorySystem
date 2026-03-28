@@ -137,24 +137,4 @@ public class PurchaseRepository {
         }
         return purchases;
     }
-
-    public double getExpensesForMonth(int month, int year) throws SQLException {
-        String sqlQuery = "SELECT COALESCE(SUM(price * amount), 0)  FROM purchases " +
-                "WHERE EXTRACT(MONTH FROM purchase_date) = ? " +
-                "AND EXTRACT(YEAR FROM purchase_date) = ? ";
-        try (
-                Connection connection = Database.DatabaseConnection();
-                PreparedStatement preparedStatement = connection.prepareStatement(sqlQuery);
-                ) {
-            preparedStatement.setInt(1, month);
-            preparedStatement.setInt(2, year);
-
-            ResultSet resultSet = preparedStatement.executeQuery();
-
-            if (resultSet.next()) {
-                return resultSet.getDouble(1);
-            }
-            return 0.0;
-        }
-    }
 }
