@@ -10,6 +10,7 @@ import javafx.stage.Stage;
 
 import java.io.*;
 import java.sql.SQLException;
+import java.util.List;
 
 public class AddCategoryController {
     @FXML private TextField nameField;
@@ -65,12 +66,6 @@ public class AddCategoryController {
 
             loadIconsFromFolder(ICONS_DIR);
             categoryIconComboBox.setValue(source.getName());
-
-
-            if (!categoryIconComboBox.getItems().contains(source.getName())) {
-                categoryIconComboBox.getItems().add(source.getName());
-            }
-            categoryIconComboBox.setValue(source.getName());
         }
 
         catch (IOException exception) {
@@ -83,13 +78,11 @@ public class AddCategoryController {
         fileChooser.setTitle("Оберіть іконку (PNG, JPG або JPEG)");
 
         FileChooser.ExtensionFilter pngFilter = new FileChooser.ExtensionFilter("PNG файли", "*.png");
-        FileChooser.ExtensionFilter jpgFilter = new FileChooser.ExtensionFilter("JPG файли", "*.jpg");
-        FileChooser.ExtensionFilter jpegFilter = new FileChooser.ExtensionFilter("JPEG файли", "*.jpeg");
+        FileChooser.ExtensionFilter jpgFilter = new FileChooser.ExtensionFilter("JPG/JPEG файли", "*.jpg", "*.jpeg");
         FileChooser.ExtensionFilter allFilter = new FileChooser.ExtensionFilter("Всі файли", "*.png", "*.jpg", "*.jpeg");
 
         fileChooser.getExtensionFilters().add(pngFilter);
         fileChooser.getExtensionFilters().add(jpgFilter);
-        fileChooser.getExtensionFilters().add(jpegFilter);
         fileChooser.getExtensionFilters().add(allFilter);
 
         File iconSource = fileChooser.showOpenDialog(nameField.getScene().getWindow());
@@ -113,9 +106,19 @@ public class AddCategoryController {
             return;
         }
 
-        String pathForDatabase = DATABASE_PREFIX + selectedIcon;
 
         try {
+            List<Category> categories = categoryRepository.getAllCategories();
+
+            for (Category category : categories) {
+                if (category.getName().equalsIgnoreCase(name)) {
+                    System.out.println("Така категорія вже існує");
+                    return;
+                }
+            }
+
+            String pathForDatabase = DATABASE_PREFIX + selectedIcon;
+
             Category category = new Category(0, name, pathForDatabase);
             categoryRepository.addCategory(category);
             onCancelButton();
