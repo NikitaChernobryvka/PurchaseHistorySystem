@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<StackPane xmlns:fx="http://javafx.com/fxml" stylesheets="@../styles/Auth.css">
+    <VBox styleClass="auth-container" spacing="20">
+        <Label styleClass="auth-title">Реєстрація</Label>
+
+        <VBox styleClass="inputs">
+            <TextField promptText="Введіть ім'я користувача"/>
+        </VBox>
+
+        <VBox styleClass="inputs">
+            <PasswordField promptText="Введіть пароль"/>
+        </VBox>
+
+        <VBox styleClass="inputs">
+            <PasswordField promptText="Підтвердіть пароль"/>
+        </VBox>
+
+        <VBox styleClass="inputs">
+            <PasswordField promptText="Введіть підказку"/>
+        </VBox>
+
+        <Button>Створити</Button>
+
+        <HBox styleClass="link">
+            <Label>Вже є акаунт?</Label>
+            <Hyperlink>Увійти</Hyperlink>
+        </HBox>
+
+        <Label/>
+    </VBox>
+</StackPane>

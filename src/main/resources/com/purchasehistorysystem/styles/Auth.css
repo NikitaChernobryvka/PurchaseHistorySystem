@@ -1,0 +1,46 @@
+.auth-container {
+    -fx-background-color: white;
+    -fx-background-radius: 10px;
+    -fx-padding: 50px;
+    -fx-alignment: center;
+    -fx-max-width: 750px;
+    -fx-max-height: 600px;
+}
+
+.auth-title {
+    -fx-font-weight: bold;
+    -fx-font-size: 24px;
+}
+
+.inputs {
+    -fx-alignment: center;
+}
+
+.inputs .label {
+    -fx-font-size: 16px;
+}
+
+.inputs .text-field, .inputs .password-field {
+    -fx-font-size: 16px;
+    -fx-pref-height: 24px;
+    -fx-background-radius: 5px;
+    -fx-max-width: 700px;
+}
+
+.button {
+    -fx-font-size: 16px;
+    -fx-background-color: #4CAF50;
+}
+
+.button:hover {
+    -fx-background-color: #43A047;
+}
+
+.button:pressed {
+    -fx-background-color: #388E3C;
+}
+
+.link {
+    -fx-alignment: center;
+    -fx-font-size: 16px;
+}
