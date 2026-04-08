@@ -6,7 +6,8 @@ import com.purchasehistorysystem.repository.PurchaseRepository;
 
 import java.sql.SQLException;
 import java.time.LocalDate;
-import java.util.List;
+import java.time.format.TextStyle;
+import java.util.*;
 
 public class PurchaseService {
     private final PurchaseRepository purchaseRepository = new PurchaseRepository();
@@ -42,5 +43,33 @@ public class PurchaseService {
 
     public List<Purchase> filterByDateRange(LocalDate from, LocalDate to) throws SQLException {
         return purchaseRepository.filterByDateRange(from, to);
+    }
+
+    public Map<String, List<Purchase>> groupByMonth(List<Purchase> purchaseList) {
+        Map<String, List<Purchase>> purchasesPerMonth = new LinkedHashMap<>();
+
+        for (Purchase purchase : purchaseList) {
+            String monthName = purchase.getDate().getMonth().getDisplayName(TextStyle.FULL_STANDALONE, Locale.forLanguageTag("uk"));
+            monthName = monthName.substring(0, 1).toUpperCase() + monthName.substring(1);
+
+            String monthYear = monthName + " " + purchase.getDate().getYear();
+
+            if (!purchasesPerMonth.containsKey(monthYear)) {
+                purchasesPerMonth.put(monthYear, new ArrayList<>());
+            }
+
+            purchasesPerMonth.get(monthYear).add(purchase);
+        }
+        return purchasesPerMonth;
+    }
+
+    public double calculateExpensesForMonth(List<Purchase> purchaseList) {
+        double expensesForMonth = 0;
+
+        for (Purchase purchase : purchaseList) {
+            expensesForMonth += purchase.getPrice() * purchase.getAmount();
+        }
+
+        return expensesForMonth;
     }
 }
