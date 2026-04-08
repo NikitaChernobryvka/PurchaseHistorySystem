@@ -2,8 +2,8 @@ package com.purchasehistorysystem.controller;
 
 import com.purchasehistorysystem.model.Category;
 import com.purchasehistorysystem.model.Purchase;
-import com.purchasehistorysystem.repository.CategoryRepository;
-import com.purchasehistorysystem.repository.PurchaseRepository;
+import com.purchasehistorysystem.service.CategoryService;
+import com.purchasehistorysystem.service.PurchaseService;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.CheckBox;
@@ -36,12 +36,12 @@ public class MainController {
     @FXML private VBox purchaseHistory;
     private List<CheckBox> checkBoxes = new ArrayList<>();
 
-    private final PurchaseRepository purchaseRepository = new PurchaseRepository();
-    private final CategoryRepository categoryRepository = new CategoryRepository();
+    private  final PurchaseService purchaseService = new PurchaseService();
+    private final CategoryService categoryService = new CategoryService();
 
     private void loadCategories() {
         try {
-            List<Category> categoryList = categoryRepository.getAllCategories();
+            List<Category> categoryList = categoryService.getAllCategories();
             categoryFilter.getItems().clear();
             categoryFilter.getItems().addAll(categoryList);
         }
@@ -55,30 +55,13 @@ public class MainController {
         purchaseHistory.getChildren().clear();
         checkBoxes.clear();
 
-        Map<String, List<Purchase>> purchasesPerMonth = new LinkedHashMap<>();
-
-        for (Purchase purchase : purchaseList) {
-            String monthName = purchase.getDate().getMonth().getDisplayName(TextStyle.FULL_STANDALONE, Locale.forLanguageTag("uk"));
-            monthName = monthName.substring(0, 1).toUpperCase() + monthName.substring(1);
-            int year = purchase.getDate().getYear();
-            String monthYear = monthName + " " + year;
-
-            if (!purchasesPerMonth.containsKey(monthYear)) {
-                purchasesPerMonth.put(monthYear, new ArrayList<>());
-            }
-
-            purchasesPerMonth.get(monthYear).add(purchase);
-        }
+        Map<String, List<Purchase>> purchasesPerMonth = purchaseService.groupByMonth(purchaseList);
 
         for (Map.Entry<String, List<Purchase>> entry : purchasesPerMonth.entrySet()) {
             String month = entry.getKey();
             List<Purchase> purchases = entry.getValue();
 
-            double expensesForMonth = 0;
-
-            for (Purchase currentItem : purchases) {
-                expensesForMonth += currentItem.getPrice() * currentItem.getAmount();
-            }
+            double expensesForMonth = purchaseService.calculateExpensesForMonth(purchases);
 
             HBox monthHeader = new HBox();
             monthHeader.getStyleClass().add("month-header");
@@ -160,7 +143,7 @@ public class MainController {
 
     private void loadPurchases() {
         try {
-            List<Purchase> purchaseList = purchaseRepository.getAllPurchases();
+            List<Purchase> purchaseList = purchaseService.getAllPurchases();
             showPurchases(purchaseList);
         }
 
@@ -183,7 +166,7 @@ public class MainController {
         }
 
         try {
-            List<Purchase> purchaseList = purchaseRepository.filterByCategory(selectedCategory.getId());
+            List<Purchase> purchaseList = purchaseService.filterByCategory(selectedCategory.getId());
             showPurchases(purchaseList);
         }
 
@@ -202,7 +185,7 @@ public class MainController {
         }
 
         try {
-            List<Purchase> purchaseList = purchaseRepository.filterByDateRange(from, to);
+            List<Purchase> purchaseList = purchaseService.filterByDateRange(from, to);
             showPurchases(purchaseList);
         }
 
@@ -244,7 +227,7 @@ public class MainController {
                 Purchase purchase = (Purchase) checkBox.getUserData();
 
                 try {
-                    purchaseRepository.deletePurchase(purchase.getId());
+                    purchaseService.deletePurchase(purchase.getId());
                     deleted = true;
                 }
 

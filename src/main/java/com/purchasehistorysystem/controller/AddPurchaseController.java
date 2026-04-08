@@ -1,9 +1,8 @@
 package com.purchasehistorysystem.controller;
 
 import com.purchasehistorysystem.model.Category;
-import com.purchasehistorysystem.model.Purchase;
-import com.purchasehistorysystem.repository.CategoryRepository;
-import com.purchasehistorysystem.repository.PurchaseRepository;
+import com.purchasehistorysystem.service.CategoryService;
+import com.purchasehistorysystem.service.PurchaseService;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -15,7 +14,6 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.time.LocalDate;
 import java.util.List;
 
 public class AddPurchaseController {
@@ -24,16 +22,16 @@ public class AddPurchaseController {
     @FXML private TextField priceField;
     @FXML private TextField amountField;
 
-    private final PurchaseRepository purchaseRepository = new PurchaseRepository();
-    private final CategoryRepository categoryRepository = new CategoryRepository();
+    private final PurchaseService purchaseService = new PurchaseService();
+    private final CategoryService categoryService = new CategoryService();
 
     private void loadCategories() {
         try {
             categoryComboBox.getItems().clear();
 
-            List<Category> categoryList = categoryRepository.getAllCategories();
+            List<Category> categories = categoryService.getAllCategories();
 
-            categoryComboBox.getItems().addAll(categoryList);
+            categoryComboBox.getItems().addAll(categories);
         }
 
         catch (SQLException exception) {
@@ -55,25 +53,32 @@ public class AddPurchaseController {
         Category category = categoryComboBox.getValue();
         String priceString = priceField.getText().trim();
         String amountString = amountField.getText().trim();
-        LocalDate date = LocalDate.now();
 
         if (name.isEmpty() || category == null || priceString.isEmpty() || amountString.isEmpty()) {
             System.out.println("Заповність всі поля");
             return;
         }
 
+        double price;
+        int amount;
+
         try {
-            double price = Double.parseDouble(priceString);
-            int amount = Integer.parseInt(amountString);
+             price = Double.parseDouble(priceString);
+             amount = Integer.parseInt(amountString);
+        }
 
-            Purchase purchase = new Purchase(0, name, category, price, amount, date);
-            purchaseRepository.addPurchase(purchase);
+        catch (Exception exception) {
+            System.out.println("Ціна та кількість мають бути числами");
+            return;
+        }
 
+        try {
+            purchaseService.addPurchase(name, category, price, amount);
             onCancelButton();
         }
 
         catch (SQLException exception) {
-            System.out.println("Помилка при збереженні нової покупки");
+            System.out.println("Помилка при збереженні покупки");
         }
     }
 

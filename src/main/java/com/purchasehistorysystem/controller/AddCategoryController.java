@@ -1,7 +1,6 @@
 package com.purchasehistorysystem.controller;
 
-import com.purchasehistorysystem.model.Category;
-import com.purchasehistorysystem.repository.CategoryRepository;
+import com.purchasehistorysystem.service.CategoryService;
 import javafx.fxml.FXML;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
@@ -10,13 +9,12 @@ import javafx.stage.Stage;
 
 import java.io.*;
 import java.sql.SQLException;
-import java.util.List;
 
 public class AddCategoryController {
     @FXML private TextField nameField;
     @FXML private ComboBox<String> categoryIconComboBox;
 
-    private final CategoryRepository categoryRepository = new CategoryRepository();
+    private final CategoryService categoryService = new CategoryService();
 
     private final String ICONS_DIR = "src/main/resources/com/purchasehistorysystem/icons/custom/";
     private final String DATABASE_PREFIX = "/com/purchasehistorysystem/icons/custom/";
@@ -101,31 +99,23 @@ public class AddCategoryController {
     @FXML public void onSaveButton() {
         String name = nameField.getText().trim();
         String selectedIcon = categoryIconComboBox.getValue();
+        String pathForDatabase = DATABASE_PREFIX + selectedIcon;
+
 
         if (name.isEmpty() || selectedIcon == null) {
             return;
         }
 
-
         try {
-            List<Category> categories = categoryRepository.getAllCategories();
-
-            for (Category category : categories) {
-                if (category.getName().equalsIgnoreCase(name)) {
-                    System.out.println("Така категорія вже існує");
-                    return;
-                }
-            }
-
-            String pathForDatabase = DATABASE_PREFIX + selectedIcon;
-
-            Category category = new Category(0, name, pathForDatabase);
-            categoryRepository.addCategory(category);
+            categoryService.addCategory(name, pathForDatabase);
             onCancelButton();
         }
 
         catch (SQLException exception) {
             System.out.println("Помилка при збереженні нової категорії");
+        }
+        catch (Exception exception) {
+            System.out.println(exception.getMessage());
         }
     }
 }
