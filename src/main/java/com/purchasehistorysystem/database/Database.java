@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 public class Database {
-    public static Connection DatabaseConnection() throws SQLException {
+    public static Connection databaseConnection() throws SQLException {
         Properties properties = new Properties();
         Connection connection = null;
 

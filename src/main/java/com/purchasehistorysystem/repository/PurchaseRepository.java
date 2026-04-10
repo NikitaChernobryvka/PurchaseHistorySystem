@@ -14,7 +14,7 @@ public class PurchaseRepository {
         String sqlQuery = "SELECT * FROM categories WHERE id = ?";
 
         try (
-                Connection connection = Database.DatabaseConnection();
+                Connection connection = Database.databaseConnection();
                 PreparedStatement preparedStatement = connection.prepareStatement(sqlQuery);
                 ) {
             preparedStatement.setInt(1, id);
@@ -35,7 +35,7 @@ public class PurchaseRepository {
         String sqlQuery = "SELECT * FROM purchases ORDER BY purchase_date DESC";
 
         try (
-                Connection connection = Database.DatabaseConnection();
+                Connection connection = Database.databaseConnection();
                 Statement statement = connection.createStatement();
                 ResultSet resultSet = statement.executeQuery(sqlQuery)
                 ) {
@@ -58,7 +58,7 @@ public class PurchaseRepository {
         String sqlQuery = "INSERT INTO purchases (name, category_id, price, amount, purchase_date) VALUES (?, ?, ?, ?, ?)";
 
         try (
-                Connection connection = Database.DatabaseConnection();
+                Connection connection = Database.databaseConnection();
                 PreparedStatement preparedStatement = connection.prepareStatement(sqlQuery);
                 ) {
             preparedStatement.setString(1, purchase.getName());
@@ -74,7 +74,7 @@ public class PurchaseRepository {
         String sqlQuery = "DELETE FROM purchases WHERE id = ?";
 
         try (
-                Connection connection = Database.DatabaseConnection();
+                Connection connection = Database.databaseConnection();
                 PreparedStatement preparedStatement = connection.prepareStatement(sqlQuery);
                 ) {
             preparedStatement.setInt(1, id);
@@ -88,7 +88,7 @@ public class PurchaseRepository {
         String sqlQuery = "SELECT * FROM purchases WHERE category_id = ? ORDER BY purchase_date DESC";
 
         try (
-                Connection connection = Database.DatabaseConnection();
+                Connection connection = Database.databaseConnection();
                 PreparedStatement preparedStatement = connection.prepareStatement(sqlQuery);
                 ) {
             preparedStatement.setInt(1, categoryId);
@@ -115,7 +115,7 @@ public class PurchaseRepository {
         String sqlQuery = "SELECT * FROM purchases WHERE purchase_date BETWEEN ? AND ? ORDER BY purchase_date DESC";
 
         try (
-                Connection connection = Database.DatabaseConnection();
+                Connection connection = Database.databaseConnection();
                 PreparedStatement preparedStatement = connection.prepareStatement(sqlQuery);
                 ) {
             preparedStatement.setDate(1, Date.valueOf(from));

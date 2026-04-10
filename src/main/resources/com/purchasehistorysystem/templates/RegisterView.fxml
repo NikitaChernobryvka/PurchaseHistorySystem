@@ -6,33 +6,34 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<StackPane xmlns:fx="http://javafx.com/fxml" stylesheets="@../styles/Auth.css">
+<StackPane xmlns:fx="http://javafx.com/fxml" stylesheets="@../styles/Auth.css"
+           fx:controller="com.purchasehistorysystem.controller.RegisterController">
     <VBox styleClass="auth-container" spacing="20">
         <Label styleClass="auth-title">Реєстрація</Label>
 
         <VBox styleClass="inputs">
-            <TextField promptText="Введіть ім'я користувача"/>
+            <TextField promptText="Введіть ім'я користувача" fx:id="usernameTextField" />
         </VBox>
 
         <VBox styleClass="inputs">
-            <PasswordField promptText="Введіть пароль"/>
+            <PasswordField promptText="Введіть пароль" fx:id="passwordField" />
         </VBox>
 
         <VBox styleClass="inputs">
-            <PasswordField promptText="Підтвердіть пароль"/>
+            <PasswordField promptText="Підтвердіть пароль" fx:id="checkPasswordField" />
         </VBox>
 
         <VBox styleClass="inputs">
-            <PasswordField promptText="Введіть підказку"/>
+            <TextField promptText="Введіть підказку" fx:id="passwordHintTextField" />
         </VBox>
 
-        <Button>Створити</Button>
+        <Button onAction="#onRegisterButton">Створити</Button>
 
         <HBox styleClass="link">
             <Label>Вже є акаунт?</Label>
-            <Hyperlink>Увійти</Hyperlink>
+            <Hyperlink onAction="#onLoginLink">Увійти</Hyperlink>
         </HBox>
 
-        <Label/>
+        <Label fx:id="errorLabel"/>
     </VBox>
 </StackPane>

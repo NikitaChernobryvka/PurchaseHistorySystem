@@ -6,25 +6,26 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<StackPane xmlns:fx="http://javafx.com/fxml" stylesheets="@../styles/Auth.css">
+<StackPane xmlns:fx="http://javafx.com/fxml" stylesheets="@../styles/Auth.css"
+           fx:controller="com.purchasehistorysystem.controller.LoginController">
     <VBox styleClass="auth-container" spacing="20">
         <Label styleClass="auth-title">Авторизація</Label>
 
         <VBox styleClass="inputs">
-            <TextField promptText="Введіть ім'я користувача"/>
+            <TextField promptText="Введіть ім'я користувача" fx:id="usernameTextField"/>
         </VBox>
 
         <VBox styleClass="inputs">
-            <PasswordField promptText="Введіть пароль"/>
+            <PasswordField promptText="Введіть пароль" fx:id="passwordField"/>
         </VBox>
 
-        <Button>Увійти</Button>
+        <Button onAction="#onLoginButton">Увійти</Button>
 
         <HBox styleClass="link">
             <Label>Не маєте акаунту?</Label>
-            <Hyperlink>Створити акаунт</Hyperlink>
+            <Hyperlink onAction="#onRegisterLink">Створити акаунт</Hyperlink>
         </HBox>
 
-        <Label/>
+        <Label fx:id="errorLabel"/>
     </VBox>
 </StackPane>

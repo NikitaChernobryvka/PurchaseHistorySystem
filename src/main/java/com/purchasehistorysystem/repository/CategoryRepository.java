@@ -16,7 +16,7 @@ public class CategoryRepository {
         String sqlQuery = "SELECT * FROM categories";
 
         try (
-                Connection connection = Database.DatabaseConnection();
+                Connection connection = Database.databaseConnection();
                 Statement statement = connection.createStatement();
                 ResultSet resultSet = statement.executeQuery(sqlQuery)
                 ) {
@@ -35,7 +35,7 @@ public class CategoryRepository {
         String sqlQuery = "INSERT INTO categories (name, icon_path) VALUES (?, ?)";
 
         try (
-                Connection connection = Database.DatabaseConnection();
+                Connection connection = Database.databaseConnection();
                 PreparedStatement preparedStatement = connection.prepareStatement(sqlQuery);
                 ) {
             preparedStatement.setString(1, category.getName());
@@ -48,7 +48,7 @@ public class CategoryRepository {
         String sqlQuery = "DELETE FROM categories WHERE id = ?";
 
         try (
-                Connection connection = Database.DatabaseConnection();
+                Connection connection = Database.databaseConnection();
                 PreparedStatement preparedStatement = connection.prepareStatement(sqlQuery);
                 ) {
             preparedStatement.setInt(1, id);
