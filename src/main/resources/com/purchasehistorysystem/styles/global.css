@@ -1,0 +1,38 @@
+.button {
+    -fx-background-color: #4CAF50;
+    -fx-background-radius: 5px;
+}
+
+.button:hover {
+    -fx-background-color: #43A047;
+}
+
+.button:pressed {
+    -fx-background-color: #388E3C;
+}
+
+.date-picker .arrow-button {
+    -fx-background-color: #4CAF50;
+}
+
+.date-picker .arrow-button:hover {
+    -fx-background-color: #43A047;
+}
+
+.date-picker .arrow-button:pressed {
+    -fx-background-color: #388E3C;
+}
+
+.combo-box {
+    -fx-background-color: #4CAF50;
+
+}
+
+.combo-box:hover {
+    -fx-background-color: #43A047;
+}
+
+.combo-box:pressed {
+    -fx-background-color: #388E3C;
+}
+

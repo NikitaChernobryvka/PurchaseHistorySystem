@@ -29,15 +29,6 @@
 
 .button {
     -fx-font-size: 16px;
-    -fx-background-color: #4CAF50;
-}
-
-.button:hover {
-    -fx-background-color: #43A047;
-}
-
-.button:pressed {
-    -fx-background-color: #388E3C;
 }
 
 .link {

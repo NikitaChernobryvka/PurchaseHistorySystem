@@ -13,7 +13,7 @@ public class App extends Application {
 
     @Override
     public void start(Stage stage) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource("/com/purchasehistorysystem/templates/RegisterView.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource("/com/purchasehistorysystem/templates/view/RegisterView.fxml"));
         Parent root = fxmlLoader.load();
         scene = new Scene(root);
         stage.setTitle("Історія покупок");
@@ -28,7 +28,7 @@ public class App extends Application {
     }
 
     public static Parent loadFxml(String fxml) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource("/com/purchasehistorysystem/templates/" + fxml + ".fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource("/com/purchasehistorysystem/templates/view/" + fxml + ".fxml"));
         return fxmlLoader.load();
     }
 }

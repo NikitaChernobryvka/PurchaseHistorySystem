@@ -23,7 +23,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.time.LocalDate;
-import java.time.format.TextStyle;
 import java.util.*;
 
 import java.sql.SQLException;
@@ -197,7 +196,7 @@ public class MainController {
     @FXML public void onAddButton() {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(
-                    "/com/purchasehistorysystem/templates/AddPurchaseDialog.fxml")
+                    "/com/purchasehistorysystem/templates/dialog/AddPurchaseDialog.fxml")
             );
 
             VBox dialogContent = fxmlLoader.load();

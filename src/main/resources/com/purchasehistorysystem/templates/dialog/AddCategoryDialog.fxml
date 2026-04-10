@@ -6,8 +6,15 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<VBox xmlns:fx="http://javafx.com/fxml" stylesheets="@../styles/AddCategoryDialogStyle.css" styleClass="vbox"
-      spacing="15" fx:controller="com.purchasehistorysystem.controller.AddCategoryController">
+<?import java.net.URL?>
+
+<VBox xmlns:fx="http://javafx.com/fxml" styleClass="vbox" spacing="15"
+      fx:controller="com.purchasehistorysystem.controller.AddCategoryController">
+
+    <stylesheets>
+        <URL value="@../../styles/global.css"/>
+        <URL value="@../../styles/dialog.css"/>
+    </stylesheets>
 
     <Label styleClass="title" alignment="CENTER">Створити категорію</Label>
 

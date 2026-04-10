@@ -85,7 +85,7 @@ public class AddPurchaseController {
     @FXML public void onAddCategoryButton() {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(
-                    "/com/purchasehistorysystem/templates/AddCategoryDialog.fxml")
+                    "/com/purchasehistorysystem/templates/dialog/AddCategoryDialog.fxml")
             );
 
             VBox dialogContent = fxmlLoader.load();
