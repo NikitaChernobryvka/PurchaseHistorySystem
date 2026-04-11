@@ -36,3 +36,23 @@
     -fx-background-color: #388E3C;
 }
 
+.error {
+    -fx-text-fill: red;
+    -fx-font-size: 16px;
+}
+
+.error-field {
+    -fx-effect: dropshadow(three-pass-box, red, 5, 0, 0, 0);
+}
+
+.toggle-button {
+    -fx-background-color: #4CAF50;
+}
+
+.toggle-button:hover {
+    -fx-background-color: #43A047;
+}
+
+.toggle-button:pressed {
+    -fx-background-color: #388E3C;
+}

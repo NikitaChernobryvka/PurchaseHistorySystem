@@ -35,3 +35,28 @@
     -fx-alignment: center;
     -fx-font-size: 16px;
 }
+
+.link-hint {
+    -fx-alignment: center-left;
+    -fx-font-size: 16px;
+}
+
+.hbox {
+    -fx-max-width: 700px;
+    -fx-alignment: center;
+}
+
+.toggle-button {
+    -fx-max-width: 30px;
+    -fx-min-width: 30px;
+    -fx-max-height: 30px;
+    -fx-min-height: 30px;
+    -fx-background-image: url("../images/Invisible.png");
+    -fx-background-position: center;
+    -fx-background-repeat: no-repeat;
+    -fx-background-size: 20px;
+}
+
+.toggle-button:selected {
+    -fx-background-image: url("../images/Visible.png");
+}

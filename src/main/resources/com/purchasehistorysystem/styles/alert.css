@@ -1,0 +1,13 @@
+.alert-container {
+    -fx-padding: 20px;
+    -fx-pref-width: -1;
+}
+
+.alert-title {
+    -fx-font-weight: bold;
+    -fx-text-align: center;
+}
+
+.label {
+    -fx-font-size: 15px;
+}

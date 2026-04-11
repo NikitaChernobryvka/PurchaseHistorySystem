@@ -23,11 +23,25 @@
         </VBox>
 
         <VBox styleClass="inputs">
-            <PasswordField promptText="Введіть пароль" fx:id="passwordField" />
+            <HBox spacing="10">
+                <StackPane HBox.hgrow="ALWAYS">
+                    <PasswordField promptText="Введіть пароль" fx:id="passwordField" />
+                    <TextField promptText="Введіть пароль" fx:id="passwordTextField" visible="false"
+                    managed="false"/>
+                </StackPane>
+                <ToggleButton onAction="#onPasswordToggleButton" fx:id="showPasswordToggle"/>
+            </HBox>
         </VBox>
 
         <VBox styleClass="inputs">
-            <PasswordField promptText="Підтвердіть пароль" fx:id="checkPasswordField" />
+            <HBox spacing="10">
+                <StackPane HBox.hgrow="ALWAYS">
+                    <PasswordField promptText="Підтвердіть пароль" fx:id="checkPasswordField" />
+                    <TextField promptText="Підтвердіть пароль" fx:id="checkPasswordTextField" visible="false"
+                    managed="false"/>
+                </StackPane>
+                <ToggleButton onAction="#onCheckPasswordToggleButton" fx:id="showCheckPasswordToggle"/>
+            </HBox>
         </VBox>
 
         <VBox styleClass="inputs">
@@ -41,6 +55,6 @@
             <Hyperlink onAction="#onLoginLink">Увійти</Hyperlink>
         </HBox>
 
-        <Label fx:id="errorLabel"/>
+        <Label fx:id="errorLabel" styleClass="error"/>
     </VBox>
 </StackPane>

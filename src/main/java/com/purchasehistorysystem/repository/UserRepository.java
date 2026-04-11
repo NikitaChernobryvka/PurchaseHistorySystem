@@ -39,4 +39,19 @@ public class UserRepository {
         }
         return null;
     }
+
+    public boolean usernameDuplicateCheck(String username) throws SQLException {
+        String sqlQuery = "SELECT 1 FROM users WHERE username = ? LIMIT 1";
+        try (
+                Connection connection = Database.databaseConnection();
+                PreparedStatement preparedStatement = connection.prepareStatement(sqlQuery);
+                ) {
+            preparedStatement.setString(1, username);
+            try (
+                    ResultSet resultSet = preparedStatement.executeQuery()
+                    ) {
+                return resultSet.next();
+            }
+        }
+    }
 }

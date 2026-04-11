@@ -24,7 +24,15 @@
         </VBox>
 
         <VBox styleClass="inputs">
-            <PasswordField promptText="Введіть пароль" fx:id="passwordField"/>
+            <HBox spacing="10" >
+                <StackPane HBox.hgrow="ALWAYS">
+                    <PasswordField promptText="Введіть пароль" fx:id="passwordField" />
+                    <TextField promptText="Введіть пароль" fx:id="passwordTextField" visible="false"
+                               managed="false"/>
+                </StackPane>
+                <ToggleButton onAction="#onPasswordToggleButton" fx:id="showPasswordToggle"/>
+            </HBox>
+            <Hyperlink onAction="#onLinkPasswordHint" styleClass="link-hint">Забули пароль?</Hyperlink>
         </VBox>
 
         <Button onAction="#onLoginButton">Увійти</Button>
@@ -34,6 +42,6 @@
             <Hyperlink onAction="#onRegisterLink">Створити акаунт</Hyperlink>
         </HBox>
 
-        <Label fx:id="errorLabel"/>
+        <Label fx:id="errorLabel" styleClass="error"/>
     </VBox>
 </StackPane>
