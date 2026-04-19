@@ -29,7 +29,7 @@ public class AddPurchaseController {
         try {
             categoryComboBox.getItems().clear();
 
-            List<Category> categories = categoryService.getAllCategories();
+            List<Category> categories = categoryService.getCustomCategories();
 
             categoryComboBox.getItems().addAll(categories);
         }
@@ -85,7 +85,7 @@ public class AddPurchaseController {
     @FXML public void onAddCategoryButton() {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(
-                    "/com/purchasehistorysystem/templates/AddCategoryDialog.fxml")
+                    "/com/purchasehistorysystem/templates/dialog/AddCategoryDialog.fxml")
             );
 
             VBox dialogContent = fxmlLoader.load();

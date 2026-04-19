@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import java.net.URL?>
+
+<StackPane xmlns:fx="http://javafx.com/fxml"
+           fx:controller="com.purchasehistorysystem.controller.LoginController">
+
+    <stylesheets>
+        <URL value="@../../styles/global.css"/>
+        <URL value="@../../styles/auth.css"/>
+    </stylesheets>
+
+    <VBox styleClass="auth-container" spacing="20">
+        <Label styleClass="auth-title">Авторизація</Label>
+
+        <VBox styleClass="inputs">
+            <TextField promptText="Введіть ім'я користувача" fx:id="usernameTextField"/>
+        </VBox>
+
+        <VBox styleClass="inputs">
+            <HBox spacing="10" >
+                <StackPane HBox.hgrow="ALWAYS">
+                    <PasswordField promptText="Введіть пароль" fx:id="passwordField" />
+                    <TextField promptText="Введіть пароль" fx:id="passwordTextField" visible="false"
+                               managed="false"/>
+                </StackPane>
+                <ToggleButton onAction="#onPasswordToggleButton" fx:id="showPasswordToggle"/>
+            </HBox>
+            <Hyperlink onAction="#onLinkPasswordHint" styleClass="link-hint">Забули пароль?</Hyperlink>
+        </VBox>
+
+        <Button onAction="#onLoginButton">Увійти</Button>
+
+        <HBox styleClass="link">
+            <Label>Не маєте акаунту?</Label>
+            <Hyperlink onAction="#onRegisterLink">Створити акаунт</Hyperlink>
+        </HBox>
+
+        <Label fx:id="errorLabel" styleClass="error"/>
+    </VBox>
+</StackPane>

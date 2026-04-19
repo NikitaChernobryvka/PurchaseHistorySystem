@@ -3,6 +3,7 @@ package com.purchasehistorysystem.service;
 import com.purchasehistorysystem.model.Category;
 import com.purchasehistorysystem.model.Purchase;
 import com.purchasehistorysystem.repository.PurchaseRepository;
+import com.purchasehistorysystem.util.UserSessionUtils;
 
 import java.sql.SQLException;
 import java.time.LocalDate;
@@ -12,8 +13,13 @@ import java.util.*;
 public class PurchaseService {
     private final PurchaseRepository purchaseRepository = new PurchaseRepository();
 
+    private int getCurrentUserId() {
+        return UserSessionUtils.getCurrentUser().getId();
+    }
+
     public List<Purchase> getAllPurchases() throws SQLException {
-        return purchaseRepository.getAllPurchases();
+        int userId = getCurrentUserId();
+        return purchaseRepository.getAllPurchases(userId);
     }
 
     public void addPurchase(String name, Category category, double price, int amount) throws SQLException {
@@ -29,20 +35,25 @@ public class PurchaseService {
             throw new IllegalArgumentException("Кількість має бути більшою за нуль");
         }
 
-        Purchase purchase = new Purchase(0, name, category, price, amount, LocalDate.now());
-        purchaseRepository.addPurchase(purchase);
+        int userId = getCurrentUserId();
+
+        Purchase purchase = new Purchase(0, name, category, price, amount, LocalDate.now(), userId);
+        purchaseRepository.addPurchase(purchase, userId);
     }
 
     public void deletePurchase(int id) throws SQLException {
-        purchaseRepository.deletePurchase(id);
+        int userId = getCurrentUserId();
+        purchaseRepository.deletePurchase(id, userId);
     }
 
     public List<Purchase> filterByCategory(int categoryID) throws SQLException {
-        return purchaseRepository.filterByCategory(categoryID);
+        int userId = getCurrentUserId();
+        return purchaseRepository.filterByCategory(categoryID, userId);
     }
 
     public List<Purchase> filterByDateRange(LocalDate from, LocalDate to) throws SQLException {
-        return purchaseRepository.filterByDateRange(from, to);
+        int userId = getCurrentUserId();
+        return purchaseRepository.filterByDateRange(from, to, userId);
     }
 
     public Map<String, List<Purchase>> groupByMonth(List<Purchase> purchaseList) {

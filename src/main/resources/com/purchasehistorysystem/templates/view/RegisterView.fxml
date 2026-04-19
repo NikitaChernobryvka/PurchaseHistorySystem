@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import java.net.URL?>
+<StackPane xmlns:fx="http://javafx.com/fxml"
+           fx:controller="com.purchasehistorysystem.controller.RegisterController">
+
+    <stylesheets>
+        <URL value="@../../styles/global.css"/>
+        <URL value="@../../styles/auth.css"/>
+    </stylesheets>
+
+    <VBox styleClass="auth-container" spacing="20">
+        <Label styleClass="auth-title">Реєстрація</Label>
+
+        <VBox styleClass="inputs">
+            <TextField promptText="Введіть ім'я користувача" fx:id="usernameTextField" />
+        </VBox>
+
+        <VBox styleClass="inputs">
+            <HBox spacing="10">
+                <StackPane HBox.hgrow="ALWAYS">
+                    <PasswordField promptText="Введіть пароль" fx:id="passwordField" />
+                    <TextField promptText="Введіть пароль" fx:id="passwordTextField" visible="false"
+                    managed="false"/>
+                </StackPane>
+                <ToggleButton onAction="#onPasswordToggleButton" fx:id="showPasswordToggle"/>
+            </HBox>
+        </VBox>
+
+        <VBox styleClass="inputs">
+            <HBox spacing="10">
+                <StackPane HBox.hgrow="ALWAYS">
+                    <PasswordField promptText="Підтвердіть пароль" fx:id="checkPasswordField" />
+                    <TextField promptText="Підтвердіть пароль" fx:id="checkPasswordTextField" visible="false"
+                    managed="false"/>
+                </StackPane>
+                <ToggleButton onAction="#onCheckPasswordToggleButton" fx:id="showCheckPasswordToggle"/>
+            </HBox>
+        </VBox>
+
+        <VBox styleClass="inputs">
+            <TextField promptText="Введіть підказку" fx:id="passwordHintTextField" />
+        </VBox>
+
+        <Button onAction="#onRegisterButton">Створити</Button>
+
+        <HBox styleClass="link">
+            <Label>Вже є акаунт?</Label>
+            <Hyperlink onAction="#onLoginLink">Увійти</Hyperlink>
+        </HBox>
+
+        <Label fx:id="errorLabel" styleClass="error"/>
+    </VBox>
+</StackPane>

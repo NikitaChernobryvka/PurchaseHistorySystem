@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import java.net.URL?>
+<VBox xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.purchasehistorysystem.controller.LogoutAlertController"
+      styleClass="alert-container" spacing="10">
+
+    <stylesheets>
+        <URL value="@../../styles/global.css"/>
+        <URL value="@../../styles/alert.css"/>
+    </stylesheets>
+
+    <Label styleClass="alert-title">Підтвердження дії</Label>
+    <Label>Ви впевнені, що хочете вийти?</Label>
+
+    <HBox spacing="10">
+        <Button fx:id="cancelButton" onAction="#onCancelButton"
+                styleClass="button-alert">Скасувати</Button>
+        <Button onAction="#onExitButton" styleClass="button-alert">Вийти</Button>
+    </HBox>
+</VBox>

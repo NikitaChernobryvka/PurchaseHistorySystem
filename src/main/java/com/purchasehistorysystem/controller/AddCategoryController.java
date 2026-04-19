@@ -1,6 +1,7 @@
 package com.purchasehistorysystem.controller;
 
 import com.purchasehistorysystem.service.CategoryService;
+import com.purchasehistorysystem.util.UserSessionUtils;
 import javafx.fxml.FXML;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
@@ -16,37 +17,36 @@ public class AddCategoryController {
 
     private final CategoryService categoryService = new CategoryService();
 
-    private final String ICONS_DIR = "src/main/resources/com/purchasehistorysystem/icons/custom/";
-    private final String DATABASE_PREFIX = "/com/purchasehistorysystem/icons/custom/";
+    private String getIconsDir() {
+        int userId = UserSessionUtils.getCurrentUser().getId();
+        return "src/main/resources/com/purchasehistorysystem/icons/custom/user_" + userId + "/";
+    }
 
     private void loadIconsFromFolder(String folderPath) {
         File folder = new File(folderPath);
-
         categoryIconComboBox.getItems().clear();
 
-        if (folder.exists() && folder.isDirectory()) {
-            File[] files = folder.listFiles();
-            if (files != null) {
-                for (File file : files) {
-                    String name = file.getName().toLowerCase();
-                    if (name.endsWith(".png") || name.endsWith(".jpg") || name.endsWith(".jpeg")) {
-                        categoryIconComboBox.getItems().add(file.getName());
-                    }
+        if (!folder.exists()) {
+            folder.mkdirs();
+        }
+
+        File[] files = folder.listFiles();
+        if (files != null) {
+            for (File file : files) {
+                String fileName = file.getName().toLowerCase();
+                if (fileName.endsWith(".png") || fileName.endsWith(".jpg") || fileName.endsWith(".jpeg")) {
+                    categoryIconComboBox.getItems().add(file.getName());
                 }
             }
         }
     }
 
-    private void configureIcons() {
-        loadIconsFromFolder(ICONS_DIR);
-
-        if (!categoryIconComboBox.getItems().isEmpty()) {
-            categoryIconComboBox.getSelectionModel().selectFirst();
-        }
-    }
-
     @FXML public void initialize() {
-        configureIcons();
+        String iconsDir = getIconsDir();
+        loadIconsFromFolder(iconsDir);
+        if (!categoryIconComboBox.getItems().isEmpty()) {
+           categoryIconComboBox.getSelectionModel().selectFirst();
+        }
     }
 
     private void copyFile(File source, File direction) {
@@ -62,7 +62,8 @@ public class AddCategoryController {
                 ) {
             inputStream.transferTo(outputStream);
 
-            loadIconsFromFolder(ICONS_DIR);
+            String iconsDir = getIconsDir();
+            loadIconsFromFolder(iconsDir);
             categoryIconComboBox.setValue(source.getName());
         }
 
@@ -86,7 +87,8 @@ public class AddCategoryController {
         File iconSource = fileChooser.showOpenDialog(nameField.getScene().getWindow());
 
         if (iconSource != null) {
-            File iconDirection = new File(ICONS_DIR, iconSource.getName());
+            String iconsDir = getIconsDir();
+            File iconDirection = new File(iconsDir, iconSource.getName());
             copyFile(iconSource, iconDirection);
         }
     }
@@ -99,15 +101,13 @@ public class AddCategoryController {
     @FXML public void onSaveButton() {
         String name = nameField.getText().trim();
         String selectedIcon = categoryIconComboBox.getValue();
-        String pathForDatabase = DATABASE_PREFIX + selectedIcon;
-
 
         if (name.isEmpty() || selectedIcon == null) {
             return;
         }
 
         try {
-            categoryService.addCategory(name, pathForDatabase);
+            categoryService.addCustomCategory(name, selectedIcon);
             onCancelButton();
         }
 

@@ -20,6 +20,7 @@
             <artifactId>javafx-controls</artifactId>
             <version>21.0.6</version>
         </dependency>
+
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-fxml</artifactId>
@@ -32,6 +33,7 @@
             <version>${junit.version}</version>
             <scope>test</scope>
         </dependency>
+
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-engine</artifactId>
@@ -45,6 +47,14 @@
             <version>42.7.10</version>
             <scope>compile</scope>
         </dependency>
+
+        <dependency>
+            <groupId>at.favre.lib</groupId>
+            <artifactId>bcrypt</artifactId>
+            <version>0.10.2</version>
+            <scope>compile</scope>
+        </dependency>
+
     </dependencies>
 
     <build>
