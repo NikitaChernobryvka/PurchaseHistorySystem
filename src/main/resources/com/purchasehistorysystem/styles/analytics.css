@@ -1,0 +1,29 @@
+.hbox-top {
+    -fx-background-color: lightgray;
+    -fx-border-color: black;
+    -fx-border-width: 0 0 1px 0;
+    -fx-padding: 20px 0 20px 20px;
+}
+
+.label {
+    -fx-font-size: 18px;
+}
+
+.button {
+    -fx-font-size: 18px;
+}
+
+.combo-box {
+    -fx-font-size: 16px;
+}
+
+.charts-container {
+    -fx-padding: 20px;
+}
+
+.hbox-bottom {
+    -fx-background-color: lightgray;
+    -fx-border-color: black;
+    -fx-border-width: 0 0 1px 0;
+    -fx-padding: 20px 0 20px 0;
+}

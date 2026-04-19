@@ -6,16 +6,9 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<?import java.net.URL?>
-
 <BorderPane xmlns:fx="http://javafx.com/fxml"
+            stylesheets="@../../styles/global.css, @../../styles/main-view.css"
             fx:controller="com.purchasehistorysystem.controller.MainController">
-
-    <stylesheets>
-        <URL value="@../../styles/global.css"/>
-        <URL value="@../../styles/main-view.css"/>
-    </stylesheets>
-
     <top>
         <VBox>
             <Label styleClass="title" alignment="CENTER">Історія покупок</Label>
@@ -35,6 +28,7 @@
         <HBox alignment="CENTER" spacing="30" styleClass="hbox-bottom">
             <Button onAction="#onAddButton">Додати</Button>
             <Button onAction="#onDeleteButton">Видалити</Button>
+            <Button onAction="#onLinkToAnalytics">Аналітика</Button>
             <Button onAction="#onLogoutButton">Вийти із системи</Button>
         </HBox>
     </bottom>
