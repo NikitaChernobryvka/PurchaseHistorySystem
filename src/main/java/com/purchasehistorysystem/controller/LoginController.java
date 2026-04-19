@@ -4,6 +4,7 @@ import com.purchasehistorysystem.App;
 import com.purchasehistorysystem.model.User;
 import com.purchasehistorysystem.service.UserService;
 import com.purchasehistorysystem.util.AuthUtils;
+import com.purchasehistorysystem.util.UserSessionUtils;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -17,8 +18,6 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
 
 public class LoginController {
     @FXML private TextField usernameTextField;
@@ -37,14 +36,15 @@ public class LoginController {
 
         try {
             User user = userService.loginUser(username, password);
-            App.setRoot("MainView");
+
+            if (user != null) {
+                UserSessionUtils.setCurrentUser(user);
+                showWelcomeAlert(user.getUsername());
+
+            }
         }
         catch (SQLException exception) {
             errorLabel.setText("Помилка під час авторизації");
-        }
-
-        catch (IOException exception) {
-            errorLabel.setText("Помилка при зміні вікна");
         }
 
         catch (IllegalArgumentException exception) {
@@ -141,17 +141,41 @@ public class LoginController {
             PasswordHintController passwordHintController = fxmlLoader.getController();
             passwordHintController.setHintText(hint);
 
-            Stage stage = new Stage();
+            Stage alertStage = new Stage();
             Scene scene = new Scene(root);
-            stage.setScene(scene);
-            stage.initModality(Modality.APPLICATION_MODAL);
-            stage.initOwner(usernameTextField.getScene().getWindow());
-            stage.setTitle("Підказка");
-            stage.show();
+            alertStage.setScene(scene);
+            alertStage.initModality(Modality.APPLICATION_MODAL);
+            alertStage.initOwner(usernameTextField.getScene().getWindow());
+
+            alertStage.show();
         }
 
         catch (IOException exception) {
             errorLabel.setText("Помилка під час відображення підказки");
+        }
+    }
+
+    private void showWelcomeAlert(String username) {
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com/purchasehistorysystem/components/alert/WelcomeAlert.fxml"));
+            Parent root = fxmlLoader.load();
+
+            WelcomeAlertController welcomeAlertController = fxmlLoader.getController();
+            welcomeAlertController.setWelcomeLabel(username);
+
+            Stage alertStage = new Stage();
+            Scene scene = new Scene(root);
+            alertStage.setScene(scene);
+            alertStage.initModality(Modality.APPLICATION_MODAL);
+            alertStage.initOwner(usernameTextField.getScene().getWindow());
+            alertStage.setTitle("Успішний вхід");
+
+            alertStage.showAndWait();
+
+            App.setRoot("MainView");
+        }
+        catch (IOException exception) {
+            errorLabel.setText("Помилка при завантаженні головного вікна");
         }
     }
 }

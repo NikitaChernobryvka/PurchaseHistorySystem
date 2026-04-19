@@ -10,43 +10,48 @@ import java.util.List;
 import java.sql.*;
 
 public class PurchaseRepository {
-    private Category getCategory(int id) throws SQLException {
-        String sqlQuery = "SELECT * FROM categories WHERE id = ?";
+    private Category getCategory(int id, int userId) throws SQLException {
+        String sqlQuery = "SELECT * FROM categories WHERE id = ? AND user_id = ?";
 
         try (
                 Connection connection = Database.databaseConnection();
                 PreparedStatement preparedStatement = connection.prepareStatement(sqlQuery);
                 ) {
             preparedStatement.setInt(1, id);
+            preparedStatement.setInt(2, userId);
             ResultSet resultSet = preparedStatement.executeQuery();
 
             if (resultSet.next()) {
                 return new Category(resultSet.getInt("id"),
                         resultSet.getString("name"),
-                        resultSet.getString("icon_path"));
+                        resultSet.getString("icon_path"),
+                        resultSet.getInt("user_id"));
             }
             throw new SQLException("Категроію з ID " + id + " не знайдено");
         }
     }
 
-    public List<Purchase> getAllPurchases() throws SQLException {
+    public List<Purchase> getAllPurchases(int userId) throws SQLException {
         List<Purchase> purchases = new ArrayList<>();
 
-        String sqlQuery = "SELECT * FROM purchases ORDER BY purchase_date DESC";
+        String sqlQuery = "SELECT * FROM purchases WHERE user_id = ? ORDER BY purchase_date DESC";
 
         try (
                 Connection connection = Database.databaseConnection();
-                Statement statement = connection.createStatement();
-                ResultSet resultSet = statement.executeQuery(sqlQuery)
+                PreparedStatement preparedStatement = connection.prepareStatement(sqlQuery);
                 ) {
+            preparedStatement.setInt(1, userId);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
             while (resultSet.next()) {
-                Category category = getCategory(resultSet.getInt("category_id"));
+                Category category = getCategory(resultSet.getInt("category_id"), userId);
                 Purchase purchase = new Purchase(resultSet.getInt("id"),
                         resultSet.getString("name"),
                         category,
                         resultSet.getDouble("price"),
                         resultSet.getInt("amount"),
-                        resultSet.getDate("purchase_date").toLocalDate());
+                        resultSet.getDate("purchase_date").toLocalDate(),
+                        resultSet.getInt("user_id"));
 
                 purchases.add(purchase);
             }
@@ -54,8 +59,8 @@ public class PurchaseRepository {
         return purchases;
     }
 
-    public void addPurchase(Purchase purchase) throws SQLException {
-        String sqlQuery = "INSERT INTO purchases (name, category_id, price, amount, purchase_date) VALUES (?, ?, ?, ?, ?)";
+    public void addPurchase(Purchase purchase, int userId) throws SQLException {
+        String sqlQuery = "INSERT INTO purchases (name, category_id, price, amount, purchase_date, user_id) VALUES (?, ?, ?, ?, ?, ?)";
 
         try (
                 Connection connection = Database.databaseConnection();
@@ -66,42 +71,46 @@ public class PurchaseRepository {
             preparedStatement.setDouble(3, purchase.getPrice());
             preparedStatement.setInt(4, purchase.getAmount());
             preparedStatement.setDate(5, Date.valueOf(purchase.getDate()));
+            preparedStatement.setInt(6, userId);
             preparedStatement.executeUpdate();
         }
     }
 
-    public void deletePurchase(int id) throws SQLException {
-        String sqlQuery = "DELETE FROM purchases WHERE id = ?";
+    public void deletePurchase(int id, int userId) throws SQLException {
+        String sqlQuery = "DELETE FROM purchases WHERE id = ? AND user_id = ?";
 
         try (
                 Connection connection = Database.databaseConnection();
                 PreparedStatement preparedStatement = connection.prepareStatement(sqlQuery);
                 ) {
             preparedStatement.setInt(1, id);
+            preparedStatement.setInt(2, userId);
             preparedStatement.executeUpdate();
         }
     }
 
-    public List<Purchase> filterByCategory(int categoryId) throws SQLException {
+    public List<Purchase> filterByCategory(int categoryId, int userId) throws SQLException {
         List<Purchase> purchases = new ArrayList<>();
 
-        String sqlQuery = "SELECT * FROM purchases WHERE category_id = ? ORDER BY purchase_date DESC";
+        String sqlQuery = "SELECT * FROM purchases WHERE category_id = ? AND user_id = ? ORDER BY purchase_date DESC";
 
         try (
                 Connection connection = Database.databaseConnection();
                 PreparedStatement preparedStatement = connection.prepareStatement(sqlQuery);
                 ) {
             preparedStatement.setInt(1, categoryId);
+            preparedStatement.setInt(2, userId);
             ResultSet resultSet = preparedStatement.executeQuery();
 
             while (resultSet.next()) {
-                Category category = getCategory(resultSet.getInt("category_id"));
+                Category category = getCategory(resultSet.getInt("category_id"), userId);
                 Purchase purchase = new Purchase(resultSet.getInt("id"),
                         resultSet.getString("name"),
                         category,
                         resultSet.getDouble("price"),
                         resultSet.getInt("amount"),
-                        resultSet.getDate("purchase_date").toLocalDate());
+                        resultSet.getDate("purchase_date").toLocalDate(),
+                        resultSet.getInt("user_id"));
 
                 purchases.add(purchase);
             }
@@ -109,10 +118,10 @@ public class PurchaseRepository {
         return purchases;
     }
 
-    public List<Purchase> filterByDateRange(LocalDate from, LocalDate to) throws SQLException {
+    public List<Purchase> filterByDateRange(LocalDate from, LocalDate to, int userId) throws SQLException {
         List<Purchase> purchases = new ArrayList<>();
 
-        String sqlQuery = "SELECT * FROM purchases WHERE purchase_date BETWEEN ? AND ? ORDER BY purchase_date DESC";
+        String sqlQuery = "SELECT * FROM purchases WHERE (purchase_date BETWEEN ? AND ?) AND user_id = ? ORDER BY purchase_date DESC";
 
         try (
                 Connection connection = Database.databaseConnection();
@@ -120,17 +129,19 @@ public class PurchaseRepository {
                 ) {
             preparedStatement.setDate(1, Date.valueOf(from));
             preparedStatement.setDate(2, Date.valueOf(to));
+            preparedStatement.setInt(3, userId);
 
             ResultSet resultSet = preparedStatement.executeQuery();
 
             while (resultSet.next()) {
-                Category category = getCategory(resultSet.getInt("category_id"));
+                Category category = getCategory(resultSet.getInt("category_id"), userId);
                 Purchase purchase = new Purchase(resultSet.getInt("id"),
                         resultSet.getString("name"),
                         category,
                         resultSet.getDouble("price"),
                         resultSet.getInt("amount"),
-                        resultSet.getDate("purchase_date").toLocalDate());
+                        resultSet.getDate("purchase_date").toLocalDate(),
+                        resultSet.getInt("user_id"));
 
                 purchases.add(purchase);
             }

@@ -29,7 +29,7 @@ public class AddPurchaseController {
         try {
             categoryComboBox.getItems().clear();
 
-            List<Category> categories = categoryService.getAllCategories();
+            List<Category> categories = categoryService.getCustomCategories();
 
             categoryComboBox.getItems().addAll(categories);
         }

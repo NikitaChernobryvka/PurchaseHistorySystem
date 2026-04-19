@@ -9,14 +9,16 @@ public class Purchase {
     private double price;
     private int amount;
     private LocalDate date;
+    private int userId;
 
-    public Purchase(int id, String name, Category category, double price, int amount, LocalDate date) {
+    public Purchase(int id, String name, Category category, double price, int amount, LocalDate date, int userId) {
         this.id = id;
         this.name = name;
         this.category = category;
         this.price = price;
         this.amount = amount;
         this.date = date;
+        this.userId = userId;
     }
 
     public int getId() {
@@ -43,6 +45,10 @@ public class Purchase {
         return date;
     }
 
+    public int getUserId() {
+        return userId;
+    }
+
     public void setId(int id) {
         this.id = id;
     }
@@ -65,5 +71,9 @@ public class Purchase {
 
     public void setDate(LocalDate date) {
         this.date = date;
+    }
+
+    public void setUserId(int userId) {
+        this.userId = userId;
     }
 }

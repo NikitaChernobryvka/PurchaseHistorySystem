@@ -1,10 +1,14 @@
 package com.purchasehistorysystem.controller;
 
+import com.purchasehistorysystem.App;
 import com.purchasehistorysystem.model.Category;
 import com.purchasehistorysystem.model.Purchase;
+import com.purchasehistorysystem.model.User;
 import com.purchasehistorysystem.service.CategoryService;
 import com.purchasehistorysystem.service.PurchaseService;
+import com.purchasehistorysystem.util.UserSessionUtils;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
@@ -40,7 +44,7 @@ public class MainController {
 
     private void loadCategories() {
         try {
-            List<Category> categoryList = categoryService.getAllCategories();
+            List<Category> categoryList = categoryService.getCustomCategories();
             categoryFilter.getItems().clear();
             categoryFilter.getItems().addAll(categoryList);
         }
@@ -93,21 +97,26 @@ public class MainController {
                 categoryContainer.getStyleClass().add("category-container");
 
                 String path = purchase.getCategory().getIconPath();
-                if (path != null || !path.isEmpty()) {
+
+                if (path != null && !path.isEmpty()) {
                     Image image = null;
 
-                    File fileOnDisk = new File("src/main/resources" + path);
+                    InputStream inputStream = getClass().getResourceAsStream(path);
 
-                    if (fileOnDisk.exists()) {
-                        image = new Image(fileOnDisk.toURI().toString());
+                    if (inputStream != null) {
+                        image = new Image(inputStream);
                     }
 
-                    else {
-                        InputStream inputStream = getClass().getResourceAsStream(path);
-                        if (inputStream != null) {
-                            image = new Image(inputStream);
-                        }
+                    if (image == null) {
+                        File source = new File("src/main/resources");
+                        String correctPath = path.startsWith("/") ? path.substring(1) : path;
 
+                        File fileOnDisk = new File(source, correctPath);
+
+                        if (fileOnDisk.exists()) {
+
+                            image = new Image(fileOnDisk.toURI().toString());
+                        }
                     }
 
                     if (image != null) {
@@ -152,6 +161,9 @@ public class MainController {
     }
 
     @FXML public void initialize() {
+        int userId = UserSessionUtils.getCurrentUser().getId();
+        categoryService.getDefaultCategories(userId);
+
         loadCategories();
         loadPurchases();
     }
@@ -239,5 +251,33 @@ public class MainController {
         if (deleted) {
             loadPurchases();
         }
+    }
+
+    @FXML private void onLogoutButton() {
+        UserSessionUtils.cleanSession();
+
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com/purchasehistorysystem/components/alert/LogoutAlert.fxml"));
+            Parent root = fxmlLoader.load();
+
+            LogoutAlertController logoutAlertController = fxmlLoader.getController();
+
+            Stage stage = new Stage();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.initOwner(categoryFilter.getScene().getWindow());
+
+            stage.showAndWait();
+
+            if (logoutAlertController.isConfirm()) {
+                App.setRoot("LoginView");
+            }
+        }
+
+        catch (IOException exception) {
+            System.out.println("Помилка під час виходу із системи");
+        }
+
     }
 }
