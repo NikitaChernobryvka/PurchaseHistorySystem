@@ -280,4 +280,14 @@ public class MainController {
         }
 
     }
+
+    @FXML private void onLinkToAnalytics() {
+        try {
+            App.setRoot("AnalyticsView");
+        }
+
+        catch (IOException exception) {
+            System.err.println("Помилка при зміні вікна");
+        }
+    }
 }
