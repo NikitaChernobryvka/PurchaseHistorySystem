@@ -10,20 +10,21 @@
 <?import javafx.scene.chart.CategoryAxis?>
 <?import javafx.scene.chart.NumberAxis?>
 <?import javafx.scene.chart.BarChart?>
-<BorderPane xmlns:fx="http://javafx.com/fxml" stylesheets="@../../styles/global.css, @../../styles/analytics.css">
+<BorderPane xmlns:fx="http://javafx.com/fxml" stylesheets="@../../styles/global.css, @../../styles/analytics.css"
+            fx:controller="com.purchasehistorysystem.controller.AnalyticsController">
     <top>
         <HBox spacing="20" alignment="CENTER_LEFT" styleClass="hbox-top">
             <Label>Аналітика за:</Label>
-            <ComboBox promptText="Місяць"/>
-            <ComboBox promptText="Рік"/>
-            <Button>Оновити</Button>
+            <ComboBox promptText="Місяць" fx:id="monthComboBox"/>
+            <ComboBox promptText="Рік" fx:id="yearComboBox"/>
+            <Button onAction="#update">Оновити</Button>
         </HBox>
     </top>
 
     <center>
         <HBox spacing="20" styleClass="charts-container">
-            <PieChart/>
-            <BarChart>
+            <PieChart fx:id="expensesPieChart"/>
+            <BarChart fx:id="expensesBarChart">
                 <xAxis>
                     <CategoryAxis side="BOTTOM"/>
                 </xAxis>
@@ -32,12 +33,17 @@
                     <NumberAxis side="LEFT"/>
                 </yAxis>
             </BarChart>
+
+            <VBox spacing="8">
+                <Label>Покупки за категоріями</Label>
+                <ListView fx:id="categoryCountList"/>
+            </VBox>
         </HBox>
     </center>
 
     <bottom>
         <HBox alignment="CENTER" styleClass="hbox-bottom">
-            <Button>Головна</Button>
+            <Button onAction="#toHomeButton">Головна</Button>
         </HBox>
     </bottom>
 </BorderPane>
