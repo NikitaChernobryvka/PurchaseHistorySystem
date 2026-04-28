@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import javafx.scene.image.ImageView?>
+<VBox xmlns:fx="http://javafx.com/fxml" stylesheets="@../../styles/analytics-report.css">
+    <Label styleClass="report-title">Звіт</Label>
+
+    <HBox>
+        <ImageView/>
+        <ImageView/>
+    </HBox>
+
+    <Label>Кількість покупок за категоріями</Label>
+    <VBox>...</VBox>
+</VBox>
