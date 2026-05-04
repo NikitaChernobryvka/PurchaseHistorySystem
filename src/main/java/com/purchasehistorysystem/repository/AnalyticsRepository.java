@@ -5,6 +5,7 @@ import com.purchasehistorysystem.database.Database;
 import java.sql.*;
 import java.time.LocalDate;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class AnalyticsRepository {
@@ -34,7 +35,7 @@ public class AnalyticsRepository {
     }
 
     public Map<LocalDate, Double> getExpensesByDate(LocalDate from, LocalDate to, int userId) throws SQLException {
-        Map<LocalDate, Double> dailyExpenses = new HashMap<>();
+        Map<LocalDate, Double> dailyExpenses = new LinkedHashMap<>();
 
         String sqlQuery = "SELECT purchase_date, SUM(price * amount) as daily_total " +
                 "FROM purchases WHERE user_id = ? AND purchase_date >= ? AND purchase_date <= ? " +
@@ -59,7 +60,7 @@ public class AnalyticsRepository {
     }
 
     public Map<String, Integer> getCategoryCount(LocalDate from, LocalDate to, int userId) throws SQLException {
-        Map<String, Integer> categoryCount = new HashMap<>();
+        Map<String, Integer> categoryCount = new LinkedHashMap<>();
 
         String sqlQuery = "SELECT categories.name, COUNT(purchases.id) as purchase_count " +
                 "FROM purchases, categories WHERE purchases.category_id = categories.id " +

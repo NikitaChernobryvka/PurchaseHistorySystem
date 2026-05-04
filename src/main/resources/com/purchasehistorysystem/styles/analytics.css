@@ -26,4 +26,70 @@
     -fx-border-color: black;
     -fx-border-width: 0 0 1px 0;
     -fx-padding: 20px 0 20px 0;
+    -fx-spacing: 10px;
+}
+
+.data-title {
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-alignment: center;
+    -fx-max-width: infinity;
+}
+
+.chart-pie-label {
+    -fx-font-size: 15px;
+}
+
+.chart-legend-item {
+    -fx-font-size: 15px;
+}
+
+.axis {
+    -fx-font-size: 15px;
+}
+
+.axis-label {
+    -fx-font-size: 15px;
+}
+
+.chart-content > .axis Text {
+    -fx-font-size: 15px;
+}
+
+.y-axis-label-padding > .axis-label {
+    -fx-padding: 0 0 30px 0;
+}
+
+.list-view {
+    -fx-font-size: 15px;
+}
+
+.chart-title {
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+}
+
+.chart-title {
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-padding: 30px;
+}
+
+.chart-title-print .chart-title {
+    -fx-font-size: 30px;
+    -fx-font-weight: bold;
+}
+
+.chart-pie {
+    -fx-padding: 30px;
+}
+
+.chart-legend-item-symbol {
+    -fx-min-width: 10px;
+    -fx-min-height: 10px;
+    -fx-pref-width: 12px;
+    -fx-pref-height: 12px;
+    -fx-max-width: 12px;
+    -fx-max-height: 12px;
+
 }

@@ -4,6 +4,8 @@ import com.purchasehistorysystem.App;
 import com.purchasehistorysystem.repository.AnalyticsRepository;
 import com.purchasehistorysystem.util.UserSessionUtils;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.print.PrinterJob;
 import javafx.scene.chart.BarChart;
 import javafx.scene.chart.XYChart;
 import javafx.scene.chart.XYChart.Series;
@@ -12,7 +14,10 @@ import javafx.scene.chart.PieChart;
 
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.ListView;
+import javafx.scene.image.WritableImage;
+import javafx.scene.layout.VBox;
 
+import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.Month;
@@ -66,6 +71,7 @@ public class AnalyticsController {
             PieChart.Data slice = new PieChart.Data(dataLabel, amount);
 
             expensesPieChart.getData().add(slice);
+            expensesPieChart.setLabelsVisible(false);
         }
     }
 
@@ -145,6 +151,49 @@ public class AnalyticsController {
         }
         catch (Exception exception) {
             System.err.println("Помилка при зміні вікна");
+        }
+    }
+
+    @FXML private void printAnalyticsButton() {
+        try {
+            expensesPieChart.getStyleClass().add("chart-title-print");
+            expensesBarChart.getStyleClass().add("chart-title-print");
+
+            expensesPieChart.applyCss();
+            expensesPieChart.layout();
+
+            expensesBarChart.applyCss();
+            expensesBarChart.layout();
+
+            String selectedMonth = monthComboBox.getSelectionModel().getSelectedItem();
+            int selectedYear = yearComboBox.getValue();
+
+            WritableImage pieChartSnapshot = expensesPieChart.snapshot(null, null);
+            WritableImage barChartSnapshot = expensesBarChart.snapshot(null, null);
+
+            expensesPieChart.getStyleClass().remove("chart-title-print");
+            expensesBarChart.getStyleClass().remove("chart-title-print");
+
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com/purchasehistorysystem/templates/view/AnalyticsReportView.fxml"));
+            VBox root = fxmlLoader.load();
+
+            ReportPrintController reportPrintController = fxmlLoader.getController();
+
+            String username = UserSessionUtils.getCurrentUser().getUsername();
+
+            reportPrintController.setData(pieChartSnapshot, barChartSnapshot,
+                    categoryCountList.getItems(), username, selectedMonth, selectedYear);
+
+            PrinterJob printerJob = PrinterJob.createPrinterJob();
+
+            if (printerJob != null && printerJob.showPrintDialog(expensesPieChart.getScene().getWindow())) {
+                printerJob.printPage(root);
+                printerJob.endJob();
+            }
+        }
+
+        catch (IOException exception) {
+            System.err.println("Помилка при завантаженні звіту");
         }
     }
 }

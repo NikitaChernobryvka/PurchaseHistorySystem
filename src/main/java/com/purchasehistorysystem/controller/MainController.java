@@ -254,8 +254,6 @@ public class MainController {
     }
 
     @FXML private void onLogoutButton() {
-        UserSessionUtils.cleanSession();
-
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com/purchasehistorysystem/components/alert/LogoutAlert.fxml"));
             Parent root = fxmlLoader.load();
@@ -265,12 +263,13 @@ public class MainController {
             Stage stage = new Stage();
             Scene scene = new Scene(root);
             stage.setScene(scene);
-            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.initModality(Modality.WINDOW_MODAL);
             stage.initOwner(categoryFilter.getScene().getWindow());
 
             stage.showAndWait();
 
             if (logoutAlertController.isConfirm()) {
+                UserSessionUtils.cleanSession();
                 App.setRoot("LoginView");
             }
         }

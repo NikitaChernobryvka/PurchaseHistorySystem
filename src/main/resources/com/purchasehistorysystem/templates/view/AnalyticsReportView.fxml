@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import javafx.scene.image.ImageView?>
+<VBox xmlns:fx="http://javafx.com/fxml" stylesheets="@../../styles/analytics-report.css"
+      fx:controller="com.purchasehistorysystem.controller.ReportPrintController" styleClass="report">
+    <Label styleClass="report-title">Звіт з аналітики</Label>
+    <VBox styleClass="report-subtitle">
+        <Label fx:id="reportDateLabel"/>
+        <Label fx:id="reportUserLabel"/>
+    </VBox>
+
+    <VBox styleClass="charts-container">
+        <ImageView fx:id="expensesPieChart" fitWidth="500" fitHeight="260" preserveRatio="true"/>
+        <ImageView fx:id="expensesBarChart" fitWidth="500" fitHeight="260" preserveRatio="true"/>
+    </VBox>
+
+    <Label styleClass="data-title">Кількість покупок за категоріями</Label>
+    <FlowPane styleClass="flow-pane" fx:id="categoryCountList"/>
+</VBox>
