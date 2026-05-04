@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox
+        xmlns:fx="http://javafx.com/fxml"
+        stylesheets="@../../styles/global.css, @../../styles/alert.css"
+        styleClass="alert-container" spacing="10"
+        fx:controller="com.purchasehistorysystem.controller.DeleteCategoryAlertController">
+
+    <Label styleClass="alert-title">Підтвердження дії</Label>
+    <Label>Ви впевнені, що хочете видалити категорію?</Label>
+
+    <HBox spacing="10" alignment="CENTER">
+        <Button fx:id="cancelButton" onAction="#onCancelButton" styleClass="button-alert">Скасувати</Button>
+        <Button onAction="#onDeleteButton" styleClass="button-alert">Видалити</Button>
+    </HBox>
+</VBox>

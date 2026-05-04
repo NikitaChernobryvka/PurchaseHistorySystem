@@ -47,16 +47,35 @@ public class CategoryRepository {
         }
     }
 
-    public void deleteCategory(int id, int userId) throws SQLException {
-        String sqlQuery = "DELETE FROM categories WHERE id = ? AND user_id = ?";
+    public void deleteCategory(int oldCategoryId, Integer newCategoryId, int userId) throws SQLException {
+        String sqlQueryUpdate = "UPDATE purchases SET category_id = ? WHERE category_id = ? AND user_id = ?";
+        String sqlQueryDelete = "DELETE FROM categories WHERE id = ? AND user_id = ?";
 
         try (
-                Connection connection = Database.databaseConnection();
-                PreparedStatement preparedStatement = connection.prepareStatement(sqlQuery);
+                Connection connection = Database.databaseConnection()
                 ) {
-            preparedStatement.setInt(1, id);
-            preparedStatement.setInt(2, userId);
-            preparedStatement.executeUpdate();
+            connection.setAutoCommit(false);
+
+            try (PreparedStatement preparedStatementUpdate = connection.prepareStatement(sqlQueryUpdate)) {
+                if (newCategoryId == null) {
+                    preparedStatementUpdate.setNull(1, Types.INTEGER);
+                }
+
+                else {
+                    preparedStatementUpdate.setInt(1, newCategoryId);
+                }
+                preparedStatementUpdate.setInt(2, oldCategoryId);
+                preparedStatementUpdate.setInt(3, userId);
+                preparedStatementUpdate.executeUpdate();
+            }
+
+            try (PreparedStatement preparedStatementDelete = connection.prepareStatement(sqlQueryDelete)) {
+                preparedStatementDelete.setInt(1, oldCategoryId);
+                preparedStatementDelete.setInt(2, userId);
+                preparedStatementDelete.executeUpdate();
+            }
+
+            connection.commit();
         }
     }
 }

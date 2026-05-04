@@ -6,8 +6,9 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<VBox xmlns:fx="http://javafx.com/fxml" styleClass="vbox" spacing="15"
+<VBox xmlns:fx="http://javafx.com/fxml" spacing="15"
       stylesheets="@../../styles/global.css, @../../styles/dialog.css"
+      styleClass="vbox"
       fx:controller="com.purchasehistorysystem.controller.AddPurchaseController">
 
     <Label alignment="CENTER" styleClass="title">Додати покупку</Label>
@@ -21,6 +22,7 @@
         <Label>Категорія: </Label>
         <ComboBox promptText="Оберіть категорію" fx:id="categoryComboBox"/>
         <Button onAction="#onAddCategoryButton">+</Button>
+        <Button onAction="#onDeleteCategoryButton">-</Button>
     </HBox>
 
     <HBox spacing="15">

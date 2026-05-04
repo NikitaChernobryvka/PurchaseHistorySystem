@@ -47,9 +47,24 @@ public class CategoryService {
         categoryRepository.addCategory(category, userId);
     }
 
-    public void deleteCategory(int id) throws SQLException {
+    public void deleteCategory(int oldCategoryId, Integer newCategoryId) throws SQLException {
         int userId = UserSessionUtils.getCurrentUser().getId();
-        categoryRepository.deleteCategory(id, userId);
+
+        if (newCategoryId == null) {
+            List<Category> userCategories = categoryRepository.getAllCategories(userId);
+
+            String deletedCategoryName = DefaultCategoryModel.DELETED.getCategoryName();
+
+            for (Category category : userCategories) {
+
+                if (category.getName().equals(deletedCategoryName)) {
+                    newCategoryId = category.getId();
+                    break;
+                }
+            }
+        }
+
+        categoryRepository.deleteCategory(oldCategoryId, newCategoryId, userId);
     }
 
     private boolean requiredDefaultCategoriesExist(int userId) {

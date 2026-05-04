@@ -106,4 +106,27 @@ public class AddPurchaseController {
             System.out.println("Помилка під час викриття діалогового вікна");
         }
     }
+
+    @FXML public void onDeleteCategoryButton() {
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(
+                    "/com/purchasehistorysystem/templates/dialog/DeleteCategoryDialog.fxml")
+            );
+
+            VBox dialogContent = fxmlLoader.load();
+
+            Stage dialogStage = new Stage();
+            Scene dialogScene = new Scene(dialogContent);
+
+            dialogStage.setTitle("Видалити категорію");
+            dialogStage.initModality(Modality.APPLICATION_MODAL);
+            dialogStage.setScene(dialogScene);
+            dialogStage.setWidth(500);
+            dialogStage.showAndWait();
+        }
+
+        catch (IOException exception) {
+            System.out.println("Помилка під час викриття діалогового вікна");
+        }
+    }
 }

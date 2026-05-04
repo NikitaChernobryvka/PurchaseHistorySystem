@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns:fx="http://javafx.com/fxml" spacing="15"
+      stylesheets="@../../styles/global.css, @../../styles/dialog.css"
+      styleClass="vbox"
+      fx:controller="com.purchasehistorysystem.controller.DeleteCategoryController">
+
+    <Label alignment="CENTER" styleClass="title">Видалити категорію</Label>
+
+    <HBox spacing="10">
+        <Label>Категорія для видалення: </Label>
+        <ComboBox fx:id="deleteCategoryComboBox" promptText="Оберіть категорію"/>
+    </HBox>
+
+    <HBox spacing="10">
+        <Label>Замінити категорію після видалення на: </Label>
+        <ComboBox fx:id="newCategoryComboBox" promptText="Не обрано"/>
+    </HBox>
+
+    <HBox spacing="15" styleClass="hbox-buttons" alignment="CENTER">
+        <Button onAction="#onCancelButton">Скасувати</Button>
+        <Button onAction="#onConfirmDeleteButton">Видалити</Button>
+    </HBox>
+
+</VBox>

@@ -11,6 +11,13 @@ import java.sql.*;
 
 public class PurchaseRepository {
     private Category getCategory(int id, int userId) throws SQLException {
+        if (id == 0) {
+            return new Category(0,
+                    "Видалено",
+                    "/com/purchasehistorysystem/icons/default/DeletedIcon.png",
+                    userId);
+        }
+
         String sqlQuery = "SELECT * FROM categories WHERE id = ? AND user_id = ?";
 
         try (
@@ -27,7 +34,10 @@ public class PurchaseRepository {
                         resultSet.getString("icon_path"),
                         resultSet.getInt("user_id"));
             }
-            throw new SQLException("Категроію з ID " + id + " не знайдено");
+            return new Category(0,
+                    "Видалено",
+                    "/com/purchasehistorysystem/icons/default/DeletedIcon.png",
+                    userId);
         }
     }
 

@@ -6,8 +6,9 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<VBox xmlns:fx="http://javafx.com/fxml" styleClass="vbox" spacing="15"
+<VBox xmlns:fx="http://javafx.com/fxml" spacing="15"
       stylesheets="@../../styles/global.css, @../../styles/dialog.css"
+      styleClass="vbox"
       fx:controller="com.purchasehistorysystem.controller.AddCategoryController">
 
     <Label styleClass="title" alignment="CENTER">Створити категорію</Label>
