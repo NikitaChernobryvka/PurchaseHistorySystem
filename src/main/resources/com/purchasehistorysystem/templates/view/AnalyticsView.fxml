@@ -23,14 +23,14 @@
 
     <center>
         <HBox spacing="20" styleClass="charts-container">
-            <PieChart fx:id="expensesPieChart"/>
-            <BarChart fx:id="expensesBarChart">
+            <PieChart fx:id="expensesPieChart" title="Витрати за категоріями" HBox.hgrow="ALWAYS"/>
+            <BarChart fx:id="expensesBarChart" title="Витрати по дням" HBox.hgrow="ALWAYS">
                 <xAxis>
-                    <CategoryAxis side="BOTTOM"/>
+                    <CategoryAxis side="BOTTOM" label="Дні"/>
                 </xAxis>
 
                 <yAxis>
-                    <NumberAxis side="LEFT"/>
+                    <NumberAxis side="LEFT" label="Витрати" styleClass="y-axis-label-padding"/>
                 </yAxis>
             </BarChart>
 
@@ -43,6 +43,7 @@
 
     <bottom>
         <HBox alignment="CENTER" styleClass="hbox-bottom">
+            <Button onAction="#printAnalyticsButton">Роздрукувати</Button>
             <Button onAction="#toHomeButton">Головна</Button>
         </HBox>
     </bottom>
