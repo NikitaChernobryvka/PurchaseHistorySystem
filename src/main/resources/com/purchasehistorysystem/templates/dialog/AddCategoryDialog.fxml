@@ -22,6 +22,7 @@
         <Label>Іконка: </Label>
         <ComboBox promptText="Оберіть іконку" fx:id="categoryIconComboBox"/>
         <Button onAction="#onDownloadIconButton">Завантажити нову</Button>
+        <Button onAction="#onDeleteIconButton">Видалити іконку зі списку</Button>
     </HBox>
 
     <HBox spacing="15" styleClass="hbox-buttons" alignment="CENTER">

@@ -95,4 +95,10 @@ public class CategoryService {
         }
         return false;
     }
+
+    public void updateDeletedIcon(String oldIconPath, String newIconPath) throws SQLException {
+        int userId = UserSessionUtils.getCurrentUser().getId();
+
+        categoryRepository.updateIconPath(oldIconPath, newIconPath, userId);
+    }
 }

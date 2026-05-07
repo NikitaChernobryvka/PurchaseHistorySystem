@@ -78,4 +78,19 @@ public class CategoryRepository {
             connection.commit();
         }
     }
+
+    public void updateIconPath(String oldIconPath, String newIconPath, int userId) throws SQLException {
+        String sqlQuery = "UPDATE categories SET icon_path = ? WHERE icon_path = ? AND user_id = ?";
+
+        try (
+                Connection connection = Database.databaseConnection();
+                PreparedStatement preparedStatement = connection.prepareStatement(sqlQuery);
+                ) {
+            preparedStatement.setString(1, newIconPath);
+            preparedStatement.setString(2, oldIconPath);
+            preparedStatement.setInt(3, userId);
+
+            preparedStatement.executeUpdate();
+        }
+    }
 }

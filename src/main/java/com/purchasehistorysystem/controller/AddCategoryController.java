@@ -118,4 +118,48 @@ public class AddCategoryController {
             System.out.println(exception.getMessage());
         }
     }
+
+    @FXML public void onDeleteIconButton() {
+        int userId = UserSessionUtils.getCurrentUser().getId();
+        String selectedIcon = categoryIconComboBox.getValue();
+
+        if (selectedIcon == null || selectedIcon.isEmpty()) {
+            System.out.println("Іконку для видалення не обрано");
+            return;
+        }
+
+        String iconsDir = getIconsDir();
+
+        File deleteFile = new File(iconsDir, selectedIcon);
+
+        if (deleteFile.exists()) {
+            boolean deleted = deleteFile.delete();
+
+            if (deleted) {
+                try {
+                    String fullPath = "/com/purchasehistorysystem/icons/custom/user_" + userId + "/" + selectedIcon;
+                    String newIconPath = "/com/purchasehistorysystem/icons/default/DeletedIcon.png";
+                    categoryService.updateDeletedIcon(fullPath, newIconPath);
+
+                    loadIconsFromFolder(iconsDir);
+
+                    if (!categoryIconComboBox.getItems().isEmpty()) {
+                        categoryIconComboBox.getSelectionModel().selectFirst();
+                    }
+
+                    else {
+                        categoryIconComboBox.setValue(null);
+                    }
+                }
+
+                catch (SQLException exception) {
+                    System.out.println("Помилка при оновлені шляхів після видалення іконки");
+                }
+            }
+
+            else {
+                System.out.println("Не вдалося видалити файл");
+            }
+        }
+    }
 }
