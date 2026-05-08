@@ -74,3 +74,8 @@
     -fx-padding: 5px;
     -fx-spacing: 15px;
 }
+
+.text-field {
+    -fx-pref-height: 24px;
+    -fx-font-size: 18px;
+}

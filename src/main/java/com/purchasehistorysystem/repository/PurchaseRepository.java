@@ -156,6 +156,39 @@ public class PurchaseRepository {
                 purchases.add(purchase);
             }
         }
+
+        return purchases;
+    }
+
+    public List<Purchase> filterByPriceRange(double minPrice, double maxPrice, int userId) throws SQLException {
+        List<Purchase> purchases = new ArrayList<>();
+
+        String sqlQuery = "SELECT * FROM purchases WHERE (price BETWEEN ? AND ?) AND user_id = ? ORDER BY purchase_date DESC";
+
+        try (
+                Connection connection = Database.databaseConnection();
+                PreparedStatement preparedStatement = connection.prepareStatement(sqlQuery);
+                ) {
+            preparedStatement.setDouble(1, minPrice);
+            preparedStatement.setDouble(2, maxPrice);
+            preparedStatement.setInt(3, userId);
+
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()) {
+                Category category = getCategory(resultSet.getInt("category_id"), userId);
+                Purchase purchase = new Purchase(resultSet.getInt("id"),
+                        resultSet.getString("name"),
+                        category,
+                        resultSet.getDouble("price"),
+                        resultSet.getInt("amount"),
+                        resultSet.getDate("purchase_date").toLocalDate(),
+                        resultSet.getInt("user_id"));
+
+                purchases.add(purchase);
+            }
+        }
+
         return purchases;
     }
 }

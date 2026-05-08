@@ -53,7 +53,26 @@ public class PurchaseService {
 
     public List<Purchase> filterByDateRange(LocalDate from, LocalDate to) throws SQLException {
         int userId = getCurrentUserId();
+
+        if (from != null && to != null && from.isAfter(to)) {
+            LocalDate temp = from;
+            from = to;
+            to = temp;
+        }
+
         return purchaseRepository.filterByDateRange(from, to, userId);
+    }
+
+    public List<Purchase> filterByPriceRange(double minPrice, double maxPrice) throws SQLException {
+        int userId = UserSessionUtils.getCurrentUser().getId();
+
+        if (maxPrice < minPrice) {
+            double temp = maxPrice;
+            maxPrice = minPrice;
+            minPrice = temp;
+        }
+
+        return purchaseRepository.filterByPriceRange(minPrice, maxPrice, userId);
     }
 
     public Map<String, List<Purchase>> groupByMonth(List<Purchase> purchaseList) {

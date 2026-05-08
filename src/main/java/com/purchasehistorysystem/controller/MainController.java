@@ -3,18 +3,14 @@ package com.purchasehistorysystem.controller;
 import com.purchasehistorysystem.App;
 import com.purchasehistorysystem.model.Category;
 import com.purchasehistorysystem.model.Purchase;
-import com.purchasehistorysystem.model.User;
 import com.purchasehistorysystem.service.CategoryService;
 import com.purchasehistorysystem.service.PurchaseService;
 import com.purchasehistorysystem.util.UserSessionUtils;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.ComboBox;
+import javafx.scene.control.*;
 import javafx.fxml.FXML;
-import javafx.scene.control.DatePicker;
-import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
@@ -34,9 +30,12 @@ import java.sql.SQLException;
 
 public class MainController {
     @FXML private ComboBox<Category> categoryFilter;
-    @FXML private DatePicker rangeFrom;
-    @FXML private DatePicker rangeTo;
+    @FXML private DatePicker rangeFromDate;
+    @FXML private DatePicker rangeToDate;
     @FXML private VBox purchaseHistory;
+    @FXML private TextField rangeMinPriceField;
+    @FXML private TextField rangeMaxPriceField;
+
     private List<CheckBox> checkBoxes = new ArrayList<>();
 
     private  final PurchaseService purchaseService = new PurchaseService();
@@ -166,6 +165,9 @@ public class MainController {
 
         loadCategories();
         loadPurchases();
+
+        rangeMinPriceField.textProperty().addListener((observable, oldValue, newValue) -> usePriceFilter());
+        rangeMaxPriceField.textProperty().addListener((observable, oldValue, newValue) -> usePriceFilter());
     }
 
     @FXML public void onCategoryFilter() {
@@ -187,8 +189,8 @@ public class MainController {
     }
 
     @FXML public void onDateFilter() {
-        LocalDate from = rangeFrom.getValue();
-        LocalDate to = rangeTo.getValue();
+        LocalDate from = rangeFromDate.getValue();
+        LocalDate to = rangeToDate.getValue();
 
         if (from == null || to == null) {
             loadPurchases();
@@ -287,6 +289,33 @@ public class MainController {
 
         catch (IOException exception) {
             System.err.println("Помилка при зміні вікна");
+        }
+    }
+
+    private void usePriceFilter() {
+        try {
+            String minPriceText = rangeMinPriceField.getText().trim();
+            String maxPriceText = rangeMaxPriceField.getText().trim();
+
+            if (minPriceText.isBlank() && maxPriceText.isBlank()) {
+                loadPurchases();
+                return;
+            }
+
+            double minPrice = minPriceText.isBlank() ? 0 : Double.parseDouble(minPriceText);
+            double maxPrice = maxPriceText.isBlank() ? Double.MAX_VALUE : Double.parseDouble(maxPriceText);
+
+            List<Purchase> purchaseList = purchaseService.filterByPriceRange(minPrice, maxPrice);
+            showPurchases(purchaseList);
+
+        }
+
+        catch (SQLException exception) {
+            System.err.println("Помилка під час фільтрації за ціною");
+        }
+
+        catch (NumberFormatException exception) {
+            System.err.println("Помилка. Введені значення мають бути числами");
         }
     }
 }

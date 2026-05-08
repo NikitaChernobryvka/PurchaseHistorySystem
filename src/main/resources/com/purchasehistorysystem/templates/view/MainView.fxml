@@ -14,8 +14,10 @@
             <Label styleClass="title" alignment="CENTER">Історія покупок</Label>
             <HBox spacing="50" alignment="CENTER_LEFT" styleClass="hbox-top">
                 <ComboBox promptText="Категорія" fx:id="categoryFilter" onAction="#onCategoryFilter"/>
-                <DatePicker promptText="Введіть першу дату" fx:id="rangeFrom" onAction="#onDateFilter"/>
-                <DatePicker promptText="Введіть другу дату" fx:id="rangeTo" onAction="#onDateFilter"/>
+                <DatePicker promptText="Введіть першу дату" fx:id="rangeFromDate" onAction="#onDateFilter"/>
+                <DatePicker promptText="Введіть другу дату" fx:id="rangeToDate" onAction="#onDateFilter"/>
+                <TextField promptText="Введіть першу ціну" fx:id="rangeMinPriceField"/>
+                <TextField promptText="Введіть другу ціну" fx:id="rangeMaxPriceField"/>
             </HBox>
         </VBox>
     </top>
