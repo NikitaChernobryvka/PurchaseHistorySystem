@@ -76,4 +76,8 @@ public class Purchase {
     public void setUserId(int userId) {
         this.userId = userId;
     }
+
+    public double getTotalPrice() {
+        return this.price * this.amount;
+    }
 }

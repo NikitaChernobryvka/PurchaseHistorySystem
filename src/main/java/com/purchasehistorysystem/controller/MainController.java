@@ -80,6 +80,7 @@ public class MainController {
 
             for (Purchase purchase : purchases) {
                 HBox row = new HBox();
+
                 row.getStyleClass().add("purchase-row");
 
                 CheckBox selectPurchase = new CheckBox();
@@ -138,10 +139,13 @@ public class MainController {
                 Label amountLabel = new Label(String.valueOf(purchase.getAmount() + " шт."));
                 amountLabel.setPrefWidth(200);
 
+                Label totalPriceLabel = new Label("Всього: " + String.valueOf(purchase.getTotalPrice()) +  " шт.");
+                totalPriceLabel.setPrefWidth(200);
+
                 Label dateLabel = new Label(purchase.getDate().toString());
                 dateLabel.setPrefWidth(200);
 
-                row.getChildren().addAll(selectPurchase, nameLabel, categoryContainer, priceLabel, amountLabel, dateLabel);
+                row.getChildren().addAll(selectPurchase, nameLabel, categoryContainer, priceLabel, amountLabel, totalPriceLabel, dateLabel);
 
                 purchaseHistory.getChildren().add(row);
             }

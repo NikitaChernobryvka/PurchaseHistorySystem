@@ -59,7 +59,7 @@
 
 .purchase-row {
     -fx-padding: 10px;
-    -fx-spacing: 20px;
+    -fx-spacing: 30px;
     -fx-border-color: black;
     -fx-border-width: 0 0 1px 0;
     -fx-alignment: CENTER_LEFT;
