@@ -20,7 +20,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 
 public class LoginController {
-    @FXML private TextField usernameTextField;
+    @FXML private TextField emailTextField;
     @FXML private PasswordField passwordField;
     @FXML private Label errorLabel;
     @FXML private TextField passwordTextField;
@@ -31,11 +31,11 @@ public class LoginController {
     @FXML private void onLoginButton() {
         clearFieldsStyles();
 
-        String username = usernameTextField.getText().trim();
+        String email = emailTextField.getText().trim();
         String password = showPasswordToggle.isSelected() ? passwordTextField.getText() : passwordField.getText();
 
         try {
-            User user = userService.loginUser(username, password);
+            User user = userService.loginUser(email, password);
 
             if (user != null) {
                 UserSessionUtils.setCurrentUser(user);
@@ -75,19 +75,19 @@ public class LoginController {
     }
 
     private void fillAllFieldsError() {
-        usernameTextField.getStyleClass().add("error-field");
+        emailTextField.getStyleClass().add("error-field");
         passwordField.getStyleClass().add("error-field");
         passwordTextField.getStyleClass().add("error-field");
     }
 
     private void invalidLoginOrPassword() {
-        usernameTextField.getStyleClass().add("error-field");
+        emailTextField.getStyleClass().add("error-field");
         passwordField.getStyleClass().add("error-field");
         passwordTextField.getStyleClass().add("error-field");
     }
 
     private void clearFieldsStyles() {
-        usernameTextField.getStyleClass().remove("error-field");
+        emailTextField.getStyleClass().remove("error-field");
         passwordField.getStyleClass().remove("error-field");
         passwordTextField.getStyleClass().remove("error-field");
     }
@@ -96,63 +96,6 @@ public class LoginController {
         boolean selected = showPasswordToggle.isSelected();
 
         AuthUtils.visibilityControl(passwordField, passwordTextField, selected);
-    }
-
-    @FXML private void onLinkPasswordHint() {
-        errorLabel.setText("");
-        usernameTextField.getStyleClass().remove("error-field");
-        passwordField.getStyleClass().remove("error-field");
-        passwordTextField.getStyleClass().remove("error-field");
-
-        String username = usernameTextField.getText().trim();
-
-        if (username.isEmpty()) {
-
-            errorLabel.setText("Введіть ім'якористувача, щоб знайти вашу підказку");
-            usernameTextField.getStyleClass().add("error-field");
-            return;
-        }
-
-        try {
-            String hint = userService.getPasswordHint(username);
-
-            if (hint == null) {
-                errorLabel.setText("Невірний логін або пароль");
-                return;
-            }
-            showPasswordHintAlert(hint);
-        }
-
-        catch (SQLException exception) {
-            errorLabel.setText("Помилка отриманні підказки");
-        }
-        catch (IllegalArgumentException exception) {
-            errorLabel.setText(exception.getMessage());
-            usernameTextField.getStyleClass().add("error-field");
-            passwordField.getStyleClass().add("error-field");
-        }
-    }
-
-    private void showPasswordHintAlert(String hint) {
-        try {
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com/purchasehistorysystem/components/alert/PasswordHintAlert.fxml"));
-            Parent root = fxmlLoader.load();
-
-            PasswordHintController passwordHintController = fxmlLoader.getController();
-            passwordHintController.setHintText(hint);
-
-            Stage alertStage = new Stage();
-            Scene scene = new Scene(root);
-            alertStage.setScene(scene);
-            alertStage.initModality(Modality.APPLICATION_MODAL);
-            alertStage.initOwner(usernameTextField.getScene().getWindow());
-
-            alertStage.show();
-        }
-
-        catch (IOException exception) {
-            errorLabel.setText("Помилка під час відображення підказки");
-        }
     }
 
     private void showWelcomeAlert(String username) {
@@ -167,7 +110,7 @@ public class LoginController {
             Scene scene = new Scene(root);
             alertStage.setScene(scene);
             alertStage.initModality(Modality.APPLICATION_MODAL);
-            alertStage.initOwner(usernameTextField.getScene().getWindow());
+            alertStage.initOwner(emailTextField.getScene().getWindow());
             alertStage.setTitle("Успішний вхід");
 
             alertStage.showAndWait();

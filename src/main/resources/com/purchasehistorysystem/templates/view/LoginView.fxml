@@ -14,7 +14,7 @@
         <Label styleClass="auth-title">Авторизація</Label>
 
         <VBox styleClass="inputs">
-            <TextField promptText="Введіть ім'я користувача" fx:id="usernameTextField"/>
+            <TextField promptText="Введіть пошту" fx:id="emailTextField"/>
         </VBox>
 
         <VBox styleClass="inputs">
@@ -26,7 +26,6 @@
                 </StackPane>
                 <ToggleButton onAction="#onPasswordToggleButton" fx:id="showPasswordToggle"/>
             </HBox>
-            <Hyperlink onAction="#onLinkPasswordHint" styleClass="link-hint">Забули пароль?</Hyperlink>
         </VBox>
 
         <Button onAction="#onLoginButton">Увійти</Button>

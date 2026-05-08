@@ -40,7 +40,7 @@
         </VBox>
 
         <VBox styleClass="inputs">
-            <TextField promptText="Введіть підказку" fx:id="passwordHintTextField" />
+            <TextField promptText="Введіть пошту" fx:id="emailTextField" />
         </VBox>
 
         <Button onAction="#onRegisterButton">Створити</Button>

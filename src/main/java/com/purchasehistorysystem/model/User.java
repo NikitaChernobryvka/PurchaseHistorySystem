@@ -4,13 +4,13 @@ public class User {
     private int id;
     private String username;
     private String passwordHash;
-    private String passwordHint;
+    private String email;
 
-    public User(int id, String username, String passwordHash, String passwordHint) {
+    public User(int id, String username, String passwordHash, String email) {
         this.id = id;
         this.username = username;
         this.passwordHash = passwordHash;
-        this.passwordHint = passwordHint;
+        this.email = email;
     }
 
     public int getId() {
@@ -25,7 +25,7 @@ public class User {
         return passwordHash;
     }
 
-    public String getPasswordHint() {
-        return passwordHint;
+    public String getEmail() {
+        return email;
     }
 }

@@ -11,13 +11,13 @@ import java.sql.SQLException;
 public class UserService {
     private final UserRepository userRepository = new UserRepository();
 
-    public void registerUser(String username, String password, String checkPassword, String passwordHint) throws  SQLException, IllegalArgumentException {
-        if (username.isBlank() || password.isBlank() || checkPassword.isBlank() || passwordHint.isBlank()) {
+    public void registerUser(String username, String password, String checkPassword, String email) throws  SQLException, IllegalArgumentException {
+        if (username.isBlank() || password.isBlank() || checkPassword.isBlank() || email.isBlank()) {
             throw new IllegalArgumentException("Заповніть усі поля");
         }
 
-        if (userRepository.usernameDuplicateCheck(username)) {
-            throw new IllegalArgumentException("Дане ім'я користувача вже зайняте");
+        if (username.length() < 4) {
+            throw new IllegalArgumentException("Ім'я користувача не має бути меншим за 4 символи");
         }
 
         String passwordRegex = "^(?=.*[A-Z])(?=.*[^a-zA-Z]).{8,}$";
@@ -30,18 +30,28 @@ public class UserService {
             throw new IllegalArgumentException("Паролі не збігаються");
         }
 
+        String emailRegex = "^[A-Za-z0-9+_.-]+@(.+)$";
+
+        if (!email.matches(emailRegex)) {
+            throw new IllegalArgumentException("Неправильний формат пошти");
+        }
+
+        if (userRepository.userDuplicateCheck(username, email)) {
+            throw new IllegalArgumentException("Ім'я користувача або пошта вже зайняте");
+        }
+
         String passwordHash = BCrypt.withDefaults().hashToString(12, password.toCharArray());
 
-        User user = new User(0, username, passwordHash, passwordHint);
+        User user = new User(0, username, passwordHash, email);
         userRepository.saveUser(user);
     }
 
-    public User loginUser(String username, String password) throws SQLException, IllegalArgumentException {
-        if (username.isBlank() || password.isBlank()) {
+    public User loginUser(String email, String password) throws SQLException, IllegalArgumentException {
+        if (email.isBlank() || password.isBlank()) {
             throw new IllegalArgumentException("Заповніть усі поля");
         }
 
-        User user = userRepository.getUser(username);
+        User user = userRepository.getUser(email);
 
         if (user == null) {
             throw new IllegalArgumentException("Невірний логін або пароль");
@@ -55,14 +65,5 @@ public class UserService {
         }
 
         return user;
-    }
-
-    public String getPasswordHint(String username) throws SQLException {
-        User user = userRepository.getUser(username);
-
-        if (user == null) {
-            throw new IllegalArgumentException("Невірний логін або пароль");
-        }
-        return user.getPasswordHint();
     }
 }

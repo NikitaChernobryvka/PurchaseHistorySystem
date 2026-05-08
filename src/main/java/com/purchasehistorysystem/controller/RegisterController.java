@@ -18,7 +18,7 @@ public class RegisterController {
     @FXML private TextField usernameTextField;
     @FXML private PasswordField passwordField;
     @FXML private PasswordField checkPasswordField;
-    @FXML private TextField passwordHintTextField;
+    @FXML private TextField emailTextField;
     @FXML private Label errorLabel;
     @FXML private TextField passwordTextField;
     @FXML private TextField checkPasswordTextField;
@@ -34,10 +34,10 @@ public class RegisterController {
         String username = usernameTextField.getText().trim();
         String password = showPasswordToggle.isSelected() ? passwordTextField.getText() : passwordField.getText();
         String checkPassword = showCheckPasswordToggle.isSelected() ? checkPasswordTextField.getText() : checkPasswordField.getText();
-        String passwordHint = passwordHintTextField.getText();
+        String email = emailTextField.getText();
 
         try {
-            userService.registerUser(username, password, checkPassword, passwordHint);
+            userService.registerUser(username, password, checkPassword, email);
             App.setRoot("LoginView");
         }
 
@@ -57,8 +57,16 @@ public class RegisterController {
                 fillAllFieldsError();
             }
 
-            if (errorMessage.contains("Дане ім'я користувача вже зайняте")) {
-                usernameTakenError();
+            if (errorMessage.contains("Ім'я користувача не має бути меншим за 4 символи")) {
+                usernameError();
+            }
+
+            if (errorMessage.contains("Неправильний формат пошти")) {
+                emailError();
+            }
+
+            if (errorMessage.contains("Ім'я користувача або пошта вже зайняте")) {
+                usernameOrEmailTakenError();
             }
 
             if (errorMessage.contains("Пароль має містити мінімум 8 символів, велику літеру та хоча б одну цифру/символ")) {
@@ -91,8 +99,8 @@ public class RegisterController {
             usernameTextField.getStyleClass().add("error-field");
         }
 
-        if (passwordHintTextField.getText().trim().isBlank()) {
-            passwordHintTextField.getStyleClass().add("error-field");
+        if (emailTextField.getText().trim().isBlank()) {
+            emailTextField.getStyleClass().add("error-field");
         }
 
         String password = showPasswordToggle.isSelected() ? passwordTextField.getText() : passwordField.getText();
@@ -108,8 +116,17 @@ public class RegisterController {
         }
     }
 
-    private void usernameTakenError() {
+    private void usernameError() {
         usernameTextField.getStyleClass().add("error-field");
+    }
+
+    private void emailError() {
+        emailTextField.getStyleClass().add("error-field");
+    }
+
+    private void usernameOrEmailTakenError() {
+        usernameTextField.getStyleClass().add("error-field");
+        emailTextField.getStyleClass().add("error-field");
     }
 
     private void incorrectPasswordError() {
@@ -137,7 +154,7 @@ public class RegisterController {
         textFieldList.add(checkPasswordField);
         textFieldList.add(checkPasswordTextField);
 
-        textFieldList.add(passwordHintTextField);
+        textFieldList.add(emailTextField);
 
         AuthUtils.clearFieldsStyles(textFieldList, "error-field");
     }
