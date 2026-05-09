@@ -28,6 +28,13 @@
             </HBox>
         </VBox>
 
+        <VBox>
+            <HBox spacing="10" alignment="CENTER_LEFT">
+                <Label>Запам'ятати мене</Label>
+                <CheckBox fx:id="rememberMeCheckBox"/>
+            </HBox>
+        </VBox>
+
         <Button onAction="#onLoginButton">Увійти</Button>
 
         <HBox styleClass="link">

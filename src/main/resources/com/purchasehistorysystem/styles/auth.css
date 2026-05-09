@@ -60,3 +60,7 @@
 .toggle-button:selected {
     -fx-background-image: url("../images/Visible.png");
 }
+
+.label {
+    -fx-font-size: 16px;
+}

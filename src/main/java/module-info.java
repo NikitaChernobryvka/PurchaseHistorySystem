@@ -4,6 +4,7 @@ module com.purchasehistorysystem {
     requires java.sql;
     requires org.postgresql.jdbc;
     requires bcrypt;
+    requires java.keyring;
 
 
     opens com.purchasehistorysystem to javafx.fxml;

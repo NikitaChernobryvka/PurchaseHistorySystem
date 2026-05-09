@@ -33,7 +33,8 @@ public class UserRepository {
                     resultSet.getInt("id"),
                     resultSet.getString("username"),
                     resultSet.getString("password_hash"),
-                    resultSet.getString("email")
+                    resultSet.getString("email"),
+                    resultSet.getString("auth_token")
                 );
             }
         }
@@ -54,5 +55,40 @@ public class UserRepository {
                 return resultSet.next();
             }
         }
+    }
+
+    public void updateAuthToken(int userId, String authToken) throws SQLException {
+        String sqlQuery = "UPDATE users SET auth_token = ? WHERE id = ?";
+        try (
+                Connection connection = Database.databaseConnection();
+                PreparedStatement preparedStatement = connection.prepareStatement(sqlQuery);
+                ) {
+            preparedStatement.setString(1, authToken);
+            preparedStatement.setInt(2, userId);
+            preparedStatement.executeUpdate();
+        }
+    }
+
+    public User findAuthToken(String authToken) throws SQLException {
+        String sqlQuery = "SELECT * FROM users WHERE auth_token = ?";
+        try (
+                Connection connection = Database.databaseConnection();
+                PreparedStatement preparedStatement = connection.prepareStatement(sqlQuery);
+                ) {
+            preparedStatement.setString(1, authToken);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()) {
+                return new User(
+                        resultSet.getInt("id"),
+                        resultSet.getString("username"),
+                        resultSet.getString("password_hash"),
+                        resultSet.getString("email"),
+                        resultSet.getString("auth_token")
+                );
+            }
+        }
+
+        return null;
     }
 }

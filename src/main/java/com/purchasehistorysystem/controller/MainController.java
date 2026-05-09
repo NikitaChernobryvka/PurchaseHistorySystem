@@ -5,6 +5,8 @@ import com.purchasehistorysystem.model.Category;
 import com.purchasehistorysystem.model.Purchase;
 import com.purchasehistorysystem.service.CategoryService;
 import com.purchasehistorysystem.service.PurchaseService;
+import com.purchasehistorysystem.service.UserService;
+import com.purchasehistorysystem.util.AuthTokenStorage;
 import com.purchasehistorysystem.util.UserSessionUtils;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -40,6 +42,7 @@ public class MainController {
 
     private  final PurchaseService purchaseService = new PurchaseService();
     private final CategoryService categoryService = new CategoryService();
+    private final UserService userService = new UserService();
 
     private void loadCategories() {
         try {
@@ -275,6 +278,16 @@ public class MainController {
             stage.showAndWait();
 
             if (logoutAlertController.isConfirm()) {
+                try {
+                    int userId = UserSessionUtils.getCurrentUser().getId();
+                    userService.updateToken(userId, null);
+                    AuthTokenStorage.clearToken();
+                }
+
+                catch (Exception exception) {
+                    System.out.println("Помилка при видаленні токену");
+                }
+
                 UserSessionUtils.cleanSession();
                 App.setRoot("LoginView");
             }

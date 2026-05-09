@@ -42,7 +42,7 @@ public class UserService {
 
         String passwordHash = BCrypt.withDefaults().hashToString(12, password.toCharArray());
 
-        User user = new User(0, username, passwordHash, email);
+        User user = new User(0, username, passwordHash, email, null);
         userRepository.saveUser(user);
     }
 
@@ -65,5 +65,13 @@ public class UserService {
         }
 
         return user;
+    }
+
+    public void updateToken(int userId, String authToken) throws SQLException {
+        userRepository.updateAuthToken(userId, authToken);
+    }
+
+    public User findAuthToken(String authToken) throws SQLException {
+        return userRepository.findAuthToken(authToken);
     }
 }

@@ -3,16 +3,14 @@ package com.purchasehistorysystem.controller;
 import com.purchasehistorysystem.App;
 import com.purchasehistorysystem.model.User;
 import com.purchasehistorysystem.service.UserService;
+import com.purchasehistorysystem.util.AuthTokenStorage;
 import com.purchasehistorysystem.util.AuthUtils;
 import com.purchasehistorysystem.util.UserSessionUtils;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.TextField;
-import javafx.scene.control.ToggleButton;
+import javafx.scene.control.*;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
@@ -25,6 +23,7 @@ public class LoginController {
     @FXML private Label errorLabel;
     @FXML private TextField passwordTextField;
     @FXML private ToggleButton showPasswordToggle;
+    @FXML private CheckBox rememberMeCheckBox;
 
     private final UserService userService = new UserService();
 
@@ -39,6 +38,14 @@ public class LoginController {
 
             if (user != null) {
                 UserSessionUtils.setCurrentUser(user);
+
+                if (rememberMeCheckBox.isSelected()) {
+                    String authToken = UserSessionUtils.generateAuthToken();
+                    int userId = user.getId();
+                    userService.updateToken(userId, authToken);
+                    AuthTokenStorage.saveToken(authToken);
+                }
+
                 showWelcomeAlert(user.getUsername());
 
             }
