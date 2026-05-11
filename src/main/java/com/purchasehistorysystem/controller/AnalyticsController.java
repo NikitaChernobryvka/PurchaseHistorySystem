@@ -6,6 +6,8 @@ import com.purchasehistorysystem.util.UserSessionUtils;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.print.PrinterJob;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.chart.BarChart;
 import javafx.scene.chart.XYChart;
 import javafx.scene.chart.XYChart.Series;
@@ -13,9 +15,13 @@ import javafx.scene.chart.XYChart.Series;
 import javafx.scene.chart.PieChart;
 
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.image.WritableImage;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -34,6 +40,8 @@ public class AnalyticsController {
     @FXML private PieChart expensesPieChart;
     @FXML private BarChart<String, Double> expensesBarChart;
     @FXML private ListView<String> categoryCountList;
+    @FXML private HBox chartsContainer;
+    @FXML private Label emptyPlaceholder;
 
     private final AnalyticsRepository analyticsRepository = new AnalyticsRepository();
 
@@ -121,13 +129,25 @@ public class AnalyticsController {
         int userId = UserSessionUtils.getCurrentUser().getId();
 
         try {
-            loadPieChart(from, to, userId);
-            loadBarChart(from, to, userId);
-            loadCategoryList(from, to, userId);
+            Map<String, Double> availabilityData = analyticsRepository.getExpensesByCategory(from, to, userId);
+
+            if (availabilityData.isEmpty()) {
+                chartsContainer.setVisible(false);
+                emptyPlaceholder.setVisible(true);
+            }
+
+            else {
+                chartsContainer.setVisible(true);
+                emptyPlaceholder.setVisible(false);
+
+                loadPieChart(from, to, userId);
+                loadBarChart(from, to, userId);
+                loadCategoryList(from, to, userId);
+            }
         }
 
         catch (SQLException exception) {
-            System.out.println("Помилка при завантаженні даних для аналітики");
+            showError("Помилка при завантаженні даних для аналітики");
         }
     }
 
@@ -150,11 +170,16 @@ public class AnalyticsController {
             App.setRoot("MainView");
         }
         catch (Exception exception) {
-            System.err.println("Помилка при зміні вікна");
+            showError("Помилка при зміні вікна");
         }
     }
 
     @FXML private void printAnalyticsButton() {
+        if (emptyPlaceholder.isVisible()) {
+            showError("Неможливо сформулювати звіт через відсутність даних");
+            return;
+        }
+
         try {
             expensesPieChart.getStyleClass().add("chart-title-print");
             expensesBarChart.getStyleClass().add("chart-title-print");
@@ -193,7 +218,31 @@ public class AnalyticsController {
         }
 
         catch (IOException exception) {
-            System.err.println("Помилка при завантаженні звіту");
+            showError("Помилка при завантаженні звіту");
+        }
+    }
+
+    private void showError(String message) {
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com/purchasehistorysystem/components/alert/ErrorAlert.fxml"));
+            Parent root = fxmlLoader.load();
+
+            ErrorAlertController errorAlertController = fxmlLoader.getController();
+            errorAlertController.setErrorMessage(message);
+
+            Stage alertStage = new Stage();
+            Scene scene = new Scene(root);
+
+            alertStage.setScene(scene);
+            alertStage.initModality(Modality.APPLICATION_MODAL);
+            alertStage.initOwner(monthComboBox.getScene().getWindow());
+            alertStage.setTitle("Помилка");
+
+            alertStage.showAndWait();
+        }
+
+        catch (IOException exception) {
+            System.out.println("Критична помилка");
         }
     }
 }

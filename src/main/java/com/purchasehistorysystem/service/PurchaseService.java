@@ -22,17 +22,17 @@ public class PurchaseService {
         return purchaseRepository.getAllPurchases(userId);
     }
 
-    public void addPurchase(String name, Category category, double price, int amount) throws SQLException {
+    public void addPurchase(String name, Category category, double price, int amount) throws SQLException, IllegalArgumentException {
         if (name.isBlank() || category == null) {
-            throw new IllegalArgumentException("Заповність всі поля");
+            throw new IllegalArgumentException("Заповніть всі поля та оберіть категорію");
         }
 
-        if (price <= 0) {
-            throw new IllegalArgumentException("Ціна має бути більшою за нуль");
+        if (price <= 0 || amount <= 0) {
+            throw new IllegalArgumentException("Вартість та кількість мають бути більшими за нуль");
         }
 
-        if (amount <= 0) {
-            throw new IllegalArgumentException("Кількість має бути більшою за нуль");
+        if (price > 999999.99) {
+            throw new IllegalArgumentException("Вартість не може перевищувати значення 999999.99");
         }
 
         int userId = getCurrentUserId();

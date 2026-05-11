@@ -22,23 +22,27 @@
     </top>
 
     <center>
-        <HBox spacing="20" styleClass="charts-container">
-            <PieChart fx:id="expensesPieChart" title="Витрати за категоріями" HBox.hgrow="ALWAYS"/>
-            <BarChart fx:id="expensesBarChart" title="Витрати по дням" HBox.hgrow="ALWAYS">
-                <xAxis>
-                    <CategoryAxis side="BOTTOM" label="Дні"/>
-                </xAxis>
+        <StackPane>
+            <HBox spacing="20" styleClass="charts-container" fx:id="chartsContainer">
+                <PieChart fx:id="expensesPieChart" title="Витрати за категоріями" HBox.hgrow="ALWAYS"/>
+                <BarChart fx:id="expensesBarChart" title="Витрати по дням" HBox.hgrow="ALWAYS">
+                    <xAxis>
+                        <CategoryAxis side="BOTTOM" label="Дні"/>
+                    </xAxis>
 
-                <yAxis>
-                    <NumberAxis side="LEFT" label="Витрати" styleClass="y-axis-label-padding"/>
-                </yAxis>
-            </BarChart>
+                    <yAxis>
+                        <NumberAxis side="LEFT" label="Витрати" styleClass="y-axis-label-padding"/>
+                    </yAxis>
+                </BarChart>
 
-            <VBox spacing="8">
-                <Label>Покупки за категоріями</Label>
-                <ListView fx:id="categoryCountList"/>
-            </VBox>
-        </HBox>
+                <VBox spacing="8">
+                    <Label>Покупки за категоріями</Label>
+                    <ListView fx:id="categoryCountList"/>
+                </VBox>
+            </HBox>
+
+            <Label fx:id="emptyPlaceholder">За даний період дані відсутні</Label>
+        </StackPane>
     </center>
 
     <bottom>

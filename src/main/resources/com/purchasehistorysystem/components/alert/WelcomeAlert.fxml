@@ -14,7 +14,6 @@
         <URL value="@../../styles/global.css"/>
         <URL value="@../../styles/alert.css"/>
     </stylesheets>
-    <Label styleClass="alert-title">Успішний вхід</Label>
     <Label fx:id="welcomeLabel"/>
     <Button onAction="#onBeginButton" styleClass="button-alert">Почати роботу</Button>
 </VBox>

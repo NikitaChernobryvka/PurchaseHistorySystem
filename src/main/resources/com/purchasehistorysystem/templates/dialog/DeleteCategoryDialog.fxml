@@ -28,4 +28,8 @@
         <Button onAction="#onConfirmDeleteButton">Видалити</Button>
     </HBox>
 
+    <HBox alignment="CENTER">
+        <Label fx:id="errorLabel" styleClass="error"/>
+    </HBox>
+
 </VBox>

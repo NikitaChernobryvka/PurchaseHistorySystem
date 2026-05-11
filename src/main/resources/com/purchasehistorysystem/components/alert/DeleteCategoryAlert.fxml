@@ -12,7 +12,6 @@
         styleClass="alert-container" spacing="10"
         fx:controller="com.purchasehistorysystem.controller.DeleteCategoryAlertController">
 
-    <Label styleClass="alert-title">Підтвердження дії</Label>
     <Label>Ви впевнені, що хочете видалити категорію?</Label>
 
     <HBox spacing="10" alignment="CENTER">

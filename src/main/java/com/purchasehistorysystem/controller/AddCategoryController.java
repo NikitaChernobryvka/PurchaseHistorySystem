@@ -4,6 +4,7 @@ import com.purchasehistorysystem.service.CategoryService;
 import com.purchasehistorysystem.util.UserSessionUtils;
 import javafx.fxml.FXML;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -14,6 +15,7 @@ import java.sql.SQLException;
 public class AddCategoryController {
     @FXML private TextField nameField;
     @FXML private ComboBox<String> categoryIconComboBox;
+    @FXML private Label errorLabel;
 
     private final CategoryService categoryService = new CategoryService();
 
@@ -68,11 +70,13 @@ public class AddCategoryController {
         }
 
         catch (IOException exception) {
-            System.out.println("Помилка під час копіювання");
+            errorLabel.setText("Помилка під час копіювання файлу");
         }
     }
 
     @FXML private void onDownloadIconButton() {
+        clearFieldsStyle();
+
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Оберіть іконку (PNG, JPG або JPEG)");
 
@@ -99,10 +103,14 @@ public class AddCategoryController {
     }
 
     @FXML public void onSaveButton() {
+        clearFieldsStyle();
+
         String name = nameField.getText().trim();
         String selectedIcon = categoryIconComboBox.getValue();
 
         if (name.isEmpty() || selectedIcon == null) {
+            errorLabel.setText("Введіть назву категорії та оберіть іконку");
+            fillAllFieldsError();
             return;
         }
 
@@ -111,20 +119,24 @@ public class AddCategoryController {
             onCancelButton();
         }
 
-        catch (SQLException exception) {
-            System.out.println("Помилка при збереженні нової категорії");
+        catch (IllegalArgumentException exception) {
+            errorLabel.setText(exception.getMessage());
         }
-        catch (Exception exception) {
-            System.out.println(exception.getMessage());
+
+        catch (SQLException exception) {
+            errorLabel.setText("Помилка при збереженні нової категорії");
         }
     }
 
     @FXML public void onDeleteIconButton() {
+        clearFieldsStyle();
+
         int userId = UserSessionUtils.getCurrentUser().getId();
         String selectedIcon = categoryIconComboBox.getValue();
 
         if (selectedIcon == null || selectedIcon.isEmpty()) {
-            System.out.println("Іконку для видалення не обрано");
+            errorLabel.setText("Іконку для видалення не обрано");
+            noIconSelected();
             return;
         }
 
@@ -153,13 +165,27 @@ public class AddCategoryController {
                 }
 
                 catch (SQLException exception) {
-                    System.out.println("Помилка при оновлені шляхів після видалення іконки");
+                    errorLabel.setText("Помилка при оновленні шляхів після видалення іконки");
                 }
             }
 
             else {
-                System.out.println("Не вдалося видалити файл");
+                errorLabel.setText("Не вдалося видалити файл");
             }
         }
+    }
+
+    private void fillAllFieldsError() {
+        nameField.getStyleClass().add("error-field");
+        categoryIconComboBox.getStyleClass().add("combo-box-error");
+    }
+
+    private void clearFieldsStyle() {
+        nameField.getStyleClass().remove("error-field");
+        categoryIconComboBox.getStyleClass().remove("combo-box-error");
+    }
+
+    private void noIconSelected() {
+        categoryIconComboBox.getStyleClass().add("combo-box-error");
     }
 }

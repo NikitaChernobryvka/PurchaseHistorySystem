@@ -7,6 +7,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
@@ -21,6 +22,7 @@ public class AddPurchaseController {
     @FXML private ComboBox<Category> categoryComboBox;
     @FXML private TextField priceField;
     @FXML private TextField amountField;
+    @FXML private Label errorLabel;
 
     private final PurchaseService purchaseService = new PurchaseService();
     private final CategoryService categoryService = new CategoryService();
@@ -49,26 +51,30 @@ public class AddPurchaseController {
     }
 
     @FXML public void onSaveButton() {
+        clearFieldsStyle();
+
         String name = nameField.getText().trim();
         Category category = categoryComboBox.getValue();
         String priceString = priceField.getText().trim();
         String amountString = amountField.getText().trim();
 
-        if (name.isEmpty() || category == null || priceString.isEmpty() || amountString.isEmpty()) {
-            System.out.println("Заповність всі поля");
-            return;
-        }
-
         double price;
         int amount;
+
+        if (name == null || name.isBlank() || priceString.isBlank() || amountString.isBlank()) {
+            errorLabel.setText("Заповніть всі поля та оберіть категорію");
+            fillAllFieldsError();
+            return;
+        }
 
         try {
              price = Double.parseDouble(priceString);
              amount = Integer.parseInt(amountString);
         }
 
-        catch (Exception exception) {
-            System.out.println("Ціна та кількість мають бути числами");
+        catch (NumberFormatException exception) {
+            errorLabel.setText("Вартість та кількість мають бути числами");
+            invalidPriceAndAmount();
             return;
         }
 
@@ -78,7 +84,24 @@ public class AddPurchaseController {
         }
 
         catch (SQLException exception) {
-            System.out.println("Помилка при збереженні покупки");
+            errorLabel.setText("Помилка при збереженні покупки");
+        }
+
+        catch (IllegalArgumentException exception) {
+            String errorMessage = exception.getMessage();
+            errorLabel.setText(errorMessage);
+
+            if (errorMessage.contains("Заповніть всі поля та оберіть категорію")) {
+                fillAllFieldsError();
+            }
+
+            if (errorMessage.contains("Вартість та кількість мають бути більшими за нуль")) {
+                invalidPriceAndAmount();
+            }
+
+            if (errorMessage.contains("Вартість не може перевищувати значення 999999.99")) {
+                veryHighPriceError();
+            }
         }
     }
 
@@ -103,7 +126,7 @@ public class AddPurchaseController {
         }
 
         catch (IOException exception) {
-            System.out.println("Помилка під час викриття діалогового вікна");
+            errorLabel.setText("Помилка під час викриття діалогового вікна");
         }
     }
 
@@ -126,7 +149,30 @@ public class AddPurchaseController {
         }
 
         catch (IOException exception) {
-            System.out.println("Помилка під час викриття діалогового вікна");
+            errorLabel.setText("Помилка під час викриття діалогового вікна");
         }
+    }
+
+    private void fillAllFieldsError() {
+        nameField.getStyleClass().add("error-field");
+        priceField.getStyleClass().add("error-field");
+        amountField.getStyleClass().add("error-field");
+        categoryComboBox.getStyleClass().add("combo-box-error");
+    }
+
+    private void invalidPriceAndAmount() {
+        priceField.getStyleClass().add("error-field");
+        amountField.getStyleClass().add("error-field");
+    }
+
+    private void veryHighPriceError() {
+        priceField.getStyleClass().add("error-field");
+    }
+
+    private void clearFieldsStyle() {
+        nameField.getStyleClass().remove("error-field");
+        priceField.getStyleClass().remove("error-field");
+        amountField.getStyleClass().remove("error-field");
+        categoryComboBox.getStyleClass().remove("combo-box-error");
     }
 }

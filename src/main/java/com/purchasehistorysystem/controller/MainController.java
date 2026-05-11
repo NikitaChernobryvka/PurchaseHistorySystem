@@ -37,6 +37,8 @@ public class MainController {
     @FXML private VBox purchaseHistory;
     @FXML private TextField rangeMinPriceField;
     @FXML private TextField rangeMaxPriceField;
+    @FXML private ScrollPane purchaseScrollPane;
+    @FXML private Label emptyPlaceholder;
 
     private List<CheckBox> checkBoxes = new ArrayList<>();
 
@@ -52,13 +54,21 @@ public class MainController {
         }
 
         catch (SQLException exception) {
-            System.out.println("Помилка при отриманні категорій");
+            showError("Помилка при отриманні категорій");
         }
     }
 
     private void showPurchases(List<Purchase> purchaseList) {
         purchaseHistory.getChildren().clear();
         checkBoxes.clear();
+
+        boolean empty = purchaseList == null || purchaseList.isEmpty();
+        emptyPlaceholder.setVisible(empty);
+        purchaseScrollPane.setVisible(!empty);
+
+        if (empty) {
+            return;
+        }
 
         Map<String, List<Purchase>> purchasesPerMonth = purchaseService.groupByMonth(purchaseList);
 
@@ -142,7 +152,7 @@ public class MainController {
                 Label amountLabel = new Label(String.valueOf(purchase.getAmount() + " шт."));
                 amountLabel.setPrefWidth(200);
 
-                Label totalPriceLabel = new Label("Всього: " + String.valueOf(purchase.getTotalPrice()) +  " шт.");
+                Label totalPriceLabel = new Label("Всього: " + String.valueOf(purchase.getTotalPrice()) +  " грн.");
                 totalPriceLabel.setPrefWidth(200);
 
                 Label dateLabel = new Label(purchase.getDate().toString());
@@ -162,13 +172,19 @@ public class MainController {
         }
 
         catch (SQLException exception) {
-            System.out.println("Помилка при отриманні списку покупок");
+            showError("Помилка при отриманні списку покупок");
         }
     }
 
     @FXML public void initialize() {
-        int userId = UserSessionUtils.getCurrentUser().getId();
-        categoryService.getDefaultCategories(userId);
+        try {
+            int userId = UserSessionUtils.getCurrentUser().getId();
+            categoryService.getDefaultCategories(userId);
+        }
+
+        catch (SQLException exception) {
+            showError("Помилка при отриманні вбудованих категорій");
+        }
 
         loadCategories();
         loadPurchases();
@@ -191,7 +207,7 @@ public class MainController {
         }
 
         catch (SQLException exception) {
-            System.out.println("Помилка при сортуванні за категорією");
+            showError("Помилка при сортуванні за категорією");
         }
     }
 
@@ -210,7 +226,7 @@ public class MainController {
         }
 
         catch (SQLException exception) {
-            System.out.println("Помилка при сортуванні за датою");
+            showError("Помилка при сортуванні за датою");
         }
     }
 
@@ -235,7 +251,7 @@ public class MainController {
         }
 
         catch (IOException exception) {
-            System.out.println("Помилка під час відкриття діалогового вікна");
+            showError("Помилка під час відкриття діалогового вікна");
         }
     }
 
@@ -252,7 +268,7 @@ public class MainController {
                 }
 
                 catch (SQLException exception) {
-                    System.out.println("Помилка при видаленні покупки");
+                    showError("Помилка при видаленні покупки");
                 }
             }
         }
@@ -269,13 +285,14 @@ public class MainController {
 
             LogoutAlertController logoutAlertController = fxmlLoader.getController();
 
-            Stage stage = new Stage();
+            Stage logoutStage = new Stage();
             Scene scene = new Scene(root);
-            stage.setScene(scene);
-            stage.initModality(Modality.WINDOW_MODAL);
-            stage.initOwner(categoryFilter.getScene().getWindow());
+            logoutStage.setScene(scene);
+            logoutStage.initModality(Modality.WINDOW_MODAL);
+            logoutStage.initOwner(categoryFilter.getScene().getWindow());
+            logoutStage.setTitle("Вихід із системи");
 
-            stage.showAndWait();
+            logoutStage.showAndWait();
 
             if (logoutAlertController.isConfirm()) {
                 try {
@@ -285,7 +302,7 @@ public class MainController {
                 }
 
                 catch (Exception exception) {
-                    System.out.println("Помилка при видаленні токену");
+                    showError("Помилка при видаленні токену");
                 }
 
                 UserSessionUtils.cleanSession();
@@ -294,7 +311,7 @@ public class MainController {
         }
 
         catch (IOException exception) {
-            System.out.println("Помилка під час виходу із системи");
+            showError("Помилка під час виходу із системи");
         }
 
     }
@@ -305,7 +322,7 @@ public class MainController {
         }
 
         catch (IOException exception) {
-            System.err.println("Помилка при зміні вікна");
+            showError("Помилка при зміні вікна");
         }
     }
 
@@ -328,11 +345,35 @@ public class MainController {
         }
 
         catch (SQLException exception) {
-            System.err.println("Помилка під час фільтрації за ціною");
+            showError("Помилка під час фільтрації за ціною");
         }
 
         catch (NumberFormatException exception) {
-            System.err.println("Помилка. Введені значення мають бути числами");
+            showError("Введені значення мають бути додатними числами");
+        }
+    }
+
+    private void showError(String message) {
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com/purchasehistorysystem/components/alert/ErrorAlert.fxml"));
+            Parent root = fxmlLoader.load();
+
+            ErrorAlertController errorAlertController = fxmlLoader.getController();
+            errorAlertController.setErrorMessage(message);
+
+            Stage alertStage = new Stage();
+            Scene scene = new Scene(root);
+
+            alertStage.setScene(scene);
+            alertStage.initModality(Modality.APPLICATION_MODAL);
+            alertStage.initOwner(categoryFilter.getScene().getWindow());
+            alertStage.setTitle("Помилка");
+
+            alertStage.showAndWait();
+        }
+
+        catch (IOException exception) {
+            System.out.println("Критична помилка");
         }
     }
 }

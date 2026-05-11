@@ -29,4 +29,8 @@
         <Button onAction="#onCancelButton">Скасувати</Button>
         <Button onAction="#onSaveButton">Зберегти</Button>
     </HBox>
+
+    <HBox alignment="CENTER">
+        <Label fx:id="errorLabel" styleClass="error"/>
+    </HBox>
 </VBox>

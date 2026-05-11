@@ -16,7 +16,6 @@
         <URL value="@../../styles/alert.css"/>
     </stylesheets>
 
-    <Label styleClass="alert-title">Підтвердження дії</Label>
     <Label>Ви впевнені, що хочете вийти?</Label>
 
     <HBox spacing="10">

@@ -9,6 +9,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
@@ -20,6 +21,7 @@ import java.util.List;
 public class DeleteCategoryController {
     @FXML private ComboBox<Category> deleteCategoryComboBox;
     @FXML private ComboBox<String> newCategoryComboBox;
+    @FXML private Label errorLabel;
 
     private final CategoryService categoryService = new CategoryService();
     private ObservableList<Category> observableCategories;
@@ -32,18 +34,18 @@ public class DeleteCategoryController {
 
             deleteCategoryComboBox.setItems(observableCategories);
 
-            newCategoryComboBox.getItems().add("Не обрано");
+            newCategoryComboBox.getItems().add("Оберіть категорію для заміни");
             newCategoryComboBox.getSelectionModel().selectFirst();
         }
 
         catch (SQLException exception) {
-            System.err.println("Помилка при заповненні випадаючого списку");
+            errorLabel.setText("Помилка при заповненні випадаючого списку");
         }
     }
 
     private void updateNewCategoryComboBox(Category selectedToDelete) {
         newCategoryComboBox.getItems().clear();
-        newCategoryComboBox.getItems().add("Не обрано");
+        newCategoryComboBox.getItems().add("Оберіть категорію для заміни");
 
         List<String> categoryNames = new ArrayList<>();
 
@@ -68,10 +70,21 @@ public class DeleteCategoryController {
     }
 
     @FXML public void onConfirmDeleteButton() {
+        clearStyles();
+
         try {
             Category deleteCategory = deleteCategoryComboBox.getValue();
+            String newCategoryName = newCategoryComboBox.getValue();
 
             if (deleteCategory == null) {
+                errorLabel.setText("Оберіть категорію для видалення");
+                chooseDeleteError();
+                return;
+            }
+
+            if (newCategoryName == null || newCategoryName.isEmpty() || newCategoryName.equals("Оберіть категорію для заміни")) {
+                errorLabel.setText("Оберіть іконку для заміни");
+                chooseChangeError();
                 return;
             }
 
@@ -81,36 +94,35 @@ public class DeleteCategoryController {
 
             DeleteCategoryAlertController deleteCategoryAlertController = fxmlLoader.getController();
 
-            Stage stage = new Stage();
+            Stage deleteCategoryStage = new Stage();
             Scene scene = new Scene(root);
-            stage.setScene(scene);
-            stage.initModality(Modality.WINDOW_MODAL);
-            stage.initOwner(deleteCategoryComboBox.getScene().getWindow());
+            deleteCategoryStage.setScene(scene);
+            deleteCategoryStage.initModality(Modality.WINDOW_MODAL);
+            deleteCategoryStage.initOwner(deleteCategoryComboBox.getScene().getWindow());
+            deleteCategoryStage.setTitle("Видалення категорії");
 
-            stage.showAndWait();
+            deleteCategoryStage.showAndWait();
 
             if (deleteCategoryAlertController.isConfirm()) {
-                String newCategoryName = newCategoryComboBox.getValue();
                 Integer newCategoryId = null;
 
-                if (!"Не обрано".equals(newCategoryName)) {
-                    for (Category category : observableCategories) {
-                        if (category.getName().equals(newCategoryName)) {
-                            newCategoryId = category.getId();
-                            break;
-                        }
+                for (Category category : observableCategories) {
+                    if (category.getName().equals(newCategoryName)) {
+                        newCategoryId = category.getId();
+                        break;
                     }
                 }
+
 
                 categoryService.deleteCategory(deleteCategory.getId(), newCategoryId);
                 close();
             }
         }
         catch (IOException exception) {
-            System.err.println("Помилка при відкритті вікна");
+            errorLabel.setText("Помилка при відкритті вікна");
         }
         catch (SQLException exception) {
-            System.err.println("Помилка при видаленні категорії");
+            errorLabel.setText("Помилка при видаленні категорії");
         }
     }
 
@@ -121,5 +133,18 @@ public class DeleteCategoryController {
 
     @FXML public void onCancelButton() {
         close();
+    }
+
+    private void chooseDeleteError() {
+        deleteCategoryComboBox.getStyleClass().add("combo-box-error");
+    }
+
+    private void chooseChangeError() {
+        newCategoryComboBox.getStyleClass().add("combo-box-error");
+    }
+
+    private void clearStyles() {
+        deleteCategoryComboBox.getStyleClass().remove("combo-box-error");
+        newCategoryComboBox.getStyleClass().remove("combo-box-error");
     }
 }

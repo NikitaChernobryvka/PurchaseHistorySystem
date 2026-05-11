@@ -113,14 +113,14 @@ public class LoginController {
             WelcomeAlertController welcomeAlertController = fxmlLoader.getController();
             welcomeAlertController.setWelcomeLabel(username);
 
-            Stage alertStage = new Stage();
+            Stage welcomeAlertStage = new Stage();
             Scene scene = new Scene(root);
-            alertStage.setScene(scene);
-            alertStage.initModality(Modality.APPLICATION_MODAL);
-            alertStage.initOwner(emailTextField.getScene().getWindow());
-            alertStage.setTitle("Успішний вхід");
+            welcomeAlertStage.setScene(scene);
+            welcomeAlertStage.initModality(Modality.APPLICATION_MODAL);
+            welcomeAlertStage.initOwner(emailTextField.getScene().getWindow());
+            welcomeAlertStage.setTitle("Успішний вхід");
 
-            alertStage.showAndWait();
+            welcomeAlertStage.showAndWait();
 
             App.setRoot("MainView");
         }

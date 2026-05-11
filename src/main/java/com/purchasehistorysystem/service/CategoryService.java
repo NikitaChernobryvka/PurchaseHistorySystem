@@ -16,29 +16,24 @@ public class CategoryService {
         return categoryRepository.getAllCategories(userId);
     }
 
-    public void getDefaultCategories(int userId) {
-        try {
-            if (requiredDefaultCategoriesExist(userId)) {
-                return;
-            }
-
-            for (DefaultCategoryModel defaultCategoryModel : DefaultCategoryModel.values()) {
-                Category newCategory = new Category(0, defaultCategoryModel.getCategoryName(),
-                        defaultCategoryModel.getIconPath(), userId);
-
-                categoryRepository.addCategory(newCategory, userId);
-            }
+    public void getDefaultCategories(int userId) throws SQLException {
+        if (requiredDefaultCategoriesExist(userId)) {
+            return;
         }
-        catch (SQLException exception) {
-            System.out.println("Помилка при збиранні вбудованих категорій");
+
+        for (DefaultCategoryModel defaultCategoryModel : DefaultCategoryModel.values()) {
+            Category newCategory = new Category(0, defaultCategoryModel.getCategoryName(),
+                    defaultCategoryModel.getIconPath(), userId);
+
+            categoryRepository.addCategory(newCategory, userId);
         }
     }
 
-    public void addCustomCategory(String name, String iconName) throws SQLException {
+    public void addCustomCategory(String name, String iconName) throws SQLException, IllegalArgumentException {
         int userId = UserSessionUtils.getCurrentUser().getId();
 
         if (requiredCustomCategoryExist(name, userId)) {
-            throw new SQLException("Така категорія вже існує");
+            throw new IllegalArgumentException("Така категорія вже існує");
         }
 
         String iconPathDatabase = "/com/purchasehistorysystem/icons/custom/user_" + userId + "/" + iconName;
@@ -67,21 +62,15 @@ public class CategoryService {
         categoryRepository.deleteCategory(oldCategoryId, newCategoryId, userId);
     }
 
-    private boolean requiredDefaultCategoriesExist(int userId) {
-        try {
-            List<Category> categoryList = categoryRepository.getAllCategories(userId);
+    private boolean requiredDefaultCategoriesExist(int userId) throws SQLException {
+        List<Category> categoryList = categoryRepository.getAllCategories(userId);
 
-            for (Category category : categoryList) {
-                if (!category.getName().equalsIgnoreCase("Всі")) {
-                    return true;
-                }
+        for (Category category : categoryList) {
+            if (!category.getName().equalsIgnoreCase("Всі")) {
+                return true;
             }
         }
-
-        catch (SQLException exception) {
-            System.err.println("Помилка при збиранні вбудованих категорій");
-        }
-
+        
         return false;
     }
 
