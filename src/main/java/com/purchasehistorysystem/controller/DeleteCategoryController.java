@@ -25,17 +25,17 @@ public class DeleteCategoryController {
 
     private final CategoryService categoryService = new CategoryService();
     private ObservableList<Category> observableCategories;
+    private boolean update = false;
 
     private void loadCategories() {
         try {
-            List<Category> categories = categoryService.getCustomCategories();
+            List<Category> categories = categoryService.getCategoriesForSelection();
 
             observableCategories = FXCollections.observableArrayList(categories);
 
             deleteCategoryComboBox.setItems(observableCategories);
 
-            newCategoryComboBox.getItems().add("Оберіть категорію для заміни");
-            newCategoryComboBox.getSelectionModel().selectFirst();
+            updateNewCategoryComboBox(null);
         }
 
         catch (SQLException exception) {
@@ -44,28 +44,70 @@ public class DeleteCategoryController {
     }
 
     private void updateNewCategoryComboBox(Category selectedToDelete) {
+        String currentSelect = newCategoryComboBox.getValue();
+
         newCategoryComboBox.getItems().clear();
-        newCategoryComboBox.getItems().add("Оберіть категорію для заміни");
 
         List<String> categoryNames = new ArrayList<>();
 
         for (Category category : observableCategories) {
-            if (category.getId() != selectedToDelete.getId()) {
+            if (selectedToDelete == null || category.getId() != selectedToDelete.getId()) {
                 categoryNames.add(category.getName());
             }
         }
 
         newCategoryComboBox.getItems().addAll(categoryNames);
-        newCategoryComboBox.getSelectionModel().selectFirst();
+
+        if (currentSelect != null && categoryNames.contains(currentSelect)) {
+            newCategoryComboBox.setValue(currentSelect);
+        }
+
+        else {
+            newCategoryComboBox.getSelectionModel().clearSelection();
+        }
+    }
+
+    private void updateDeleteCategoryComboBox(String selectedToReplace) {
+        Category currentSelected = deleteCategoryComboBox.getValue();
+
+        List<Category> filteredToDelete = new ArrayList<>();
+
+        for (Category category : observableCategories) {
+            if (!category.getName().equals(selectedToReplace)) {
+                filteredToDelete.add(category);
+            }
+        }
+
+        ObservableList<Category> filteredItems = FXCollections.observableArrayList(filteredToDelete);
+
+        deleteCategoryComboBox.setItems(filteredItems);
+
+        if (currentSelected != null && !currentSelected.getName().equals(selectedToReplace)) {
+            deleteCategoryComboBox.setValue(currentSelected);
+        }
     }
 
     @FXML public void initialize() {
         loadCategories();
 
         deleteCategoryComboBox.valueProperty().addListener((obsValue, oldValue, newValue) -> {
-            if (newValue != null) {
-                updateNewCategoryComboBox(newValue);
+            if (update || newValue == null) {
+                return;
             }
+
+            update = true;
+            updateNewCategoryComboBox(newValue);
+            update = false;
+        });
+
+        newCategoryComboBox.valueProperty().addListener((obsValue, oldValue, newValue) -> {
+            if (update || newValue == null) {
+                return;
+            }
+
+            update = true;
+            updateDeleteCategoryComboBox(newValue);
+            update = false;
         });
     }
 
@@ -82,8 +124,8 @@ public class DeleteCategoryController {
                 return;
             }
 
-            if (newCategoryName == null || newCategoryName.isEmpty() || newCategoryName.equals("Оберіть категорію для заміни")) {
-                errorLabel.setText("Оберіть іконку для заміни");
+            if (newCategoryName == null || newCategoryName.isEmpty()) {
+                errorLabel.setText("Оберіть категорію для заміни");
                 chooseChangeError();
                 return;
             }
