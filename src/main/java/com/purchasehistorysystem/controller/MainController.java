@@ -232,6 +232,9 @@ public class MainController {
 
     @FXML public void onAddButton() {
         try {
+            Category selectedCategory = categoryFilter.getValue();
+            Integer selectedCategoryId = selectedCategory != null ? selectedCategory.getId() : null;
+
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(
                     "/com/purchasehistorysystem/templates/dialog/AddPurchaseDialog.fxml")
             );
@@ -247,8 +250,16 @@ public class MainController {
             dialogStage.setWidth(500);
             dialogStage.showAndWait();
 
-            loadPurchases();
             loadCategories();
+
+            if (selectedCategoryId != null) {
+                for (Category category : categoryFilter.getItems()) {
+                    if (category.getId() == selectedCategoryId) {
+                        categoryFilter.setValue(category);
+                        break;
+                    }
+                }
+            }
         }
 
         catch (IOException exception) {
