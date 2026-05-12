@@ -6,6 +6,7 @@ import com.purchasehistorysystem.repository.CategoryRepository;
 import com.purchasehistorysystem.util.UserSessionUtils;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class CategoryService {
@@ -14,6 +15,19 @@ public class CategoryService {
     public List<Category> getCustomCategories() throws SQLException {
         int userId = UserSessionUtils.getCurrentUser().getId();
         return categoryRepository.getAllCategories(userId);
+    }
+
+    public List<Category> getCategoriesForSelection() throws SQLException {
+        List<Category> categories = getCustomCategories();
+        List<Category> filteredCategories = new ArrayList<>();
+
+        for (Category category : categories) {
+            if (!category.getName().equalsIgnoreCase("Всі")) {
+                filteredCategories.add(category);
+            }
+        }
+
+        return filteredCategories;
     }
 
     public void getDefaultCategories(int userId) throws SQLException {

@@ -31,13 +31,13 @@ public class AddPurchaseController {
         try {
             categoryComboBox.getItems().clear();
 
-            List<Category> categories = categoryService.getCustomCategories();
+            List<Category> categories = categoryService.getCategoriesForSelection();
 
             categoryComboBox.getItems().addAll(categories);
         }
 
         catch (SQLException exception) {
-            System.out.println("Помилка при завантаженні категорій");
+            errorLabel.setText("Помилка при завантаженні категорій");
         }
     }
 
