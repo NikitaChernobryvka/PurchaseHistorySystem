@@ -177,6 +177,21 @@ public class DeleteCategoryController {
         close();
     }
 
+    @FXML public void onClearButton() {
+        update = true;
+
+        deleteCategoryComboBox.getSelectionModel().clearSelection();
+        newCategoryComboBox.getSelectionModel().clearSelection();
+
+        deleteCategoryComboBox.setItems(observableCategories);
+        updateNewCategoryComboBox(null);
+
+        clearStyles();
+        errorLabel.setText("");
+
+        update = false;
+    }
+
     private void chooseDeleteError() {
         deleteCategoryComboBox.getStyleClass().add("combo-box-error");
     }

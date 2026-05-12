@@ -26,6 +26,7 @@
     <HBox spacing="15" styleClass="hbox-buttons" alignment="CENTER">
         <Button onAction="#onCancelButton">Скасувати</Button>
         <Button onAction="#onConfirmDeleteButton">Видалити</Button>
+        <Button onAction="#onClearButton">Очистити</Button>
     </HBox>
 
     <HBox alignment="CENTER">
