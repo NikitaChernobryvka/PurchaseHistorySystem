@@ -248,6 +248,7 @@ public class MainController {
             dialogStage.showAndWait();
 
             loadPurchases();
+            loadCategories();
         }
 
         catch (IOException exception) {
