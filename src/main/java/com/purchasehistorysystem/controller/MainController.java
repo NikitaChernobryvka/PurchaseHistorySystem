@@ -286,7 +286,7 @@ public class MainController {
         }
 
         if (deleted) {
-            loadPurchases();
+            onCategoryFilter();
         }
     }
 
