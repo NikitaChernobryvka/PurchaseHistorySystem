@@ -1,14 +1,13 @@
 package com.purchasehistorysystem.model;
 
-public enum DefaultCategoryModel {
+public enum DefaultCategory {
     FOOD("Їжа", "/com/purchasehistorysystem/icons/default/FoodIcon.png"),
-    SPORT("Спорт", "/com/purchasehistorysystem/icons/default/SportIcon.png"),
-    DELETED("Видалено", "/com/purchasehistorysystem/icons/default/DeletedIcon.png");
+    SPORT("Спорт", "/com/purchasehistorysystem/icons/default/SportIcon.png");
 
     private final String categoryName;
     private final String iconPath;
 
-    DefaultCategoryModel(String categoryName, String iconPath) {
+    DefaultCategory(String categoryName, String iconPath) {
         this.categoryName = categoryName;
         this.iconPath = iconPath;
     }

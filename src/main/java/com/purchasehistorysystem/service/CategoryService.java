@@ -1,11 +1,12 @@
 package com.purchasehistorysystem.service;
 
 import com.purchasehistorysystem.model.Category;
-import com.purchasehistorysystem.model.DefaultCategoryModel;
+import com.purchasehistorysystem.model.DefaultCategory;
 import com.purchasehistorysystem.repository.CategoryRepository;
 import com.purchasehistorysystem.util.UserSessionUtils;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class CategoryService {
@@ -16,14 +17,27 @@ public class CategoryService {
         return categoryRepository.getAllCategories(userId);
     }
 
+    public List<Category> getCategoriesForSelection() throws SQLException {
+        List<Category> categories = getCustomCategories();
+        List<Category> filteredCategories = new ArrayList<>();
+
+        for (Category category : categories) {
+            if (!category.getName().equalsIgnoreCase("Всі")) {
+                filteredCategories.add(category);
+            }
+        }
+
+        return filteredCategories;
+    }
+
     public void getDefaultCategories(int userId) throws SQLException {
         if (requiredDefaultCategoriesExist(userId)) {
             return;
         }
 
-        for (DefaultCategoryModel defaultCategoryModel : DefaultCategoryModel.values()) {
-            Category newCategory = new Category(0, defaultCategoryModel.getCategoryName(),
-                    defaultCategoryModel.getIconPath(), userId);
+        for (DefaultCategory defaultCategory : DefaultCategory.values()) {
+            Category newCategory = new Category(0, defaultCategory.getCategoryName(),
+                    defaultCategory.getIconPath(), userId);
 
             categoryRepository.addCategory(newCategory, userId);
         }
@@ -44,21 +58,6 @@ public class CategoryService {
 
     public void deleteCategory(int oldCategoryId, Integer newCategoryId) throws SQLException {
         int userId = UserSessionUtils.getCurrentUser().getId();
-
-        if (newCategoryId == null) {
-            List<Category> userCategories = categoryRepository.getAllCategories(userId);
-
-            String deletedCategoryName = DefaultCategoryModel.DELETED.getCategoryName();
-
-            for (Category category : userCategories) {
-
-                if (category.getName().equals(deletedCategoryName)) {
-                    newCategoryId = category.getId();
-                    break;
-                }
-            }
-        }
-
         categoryRepository.deleteCategory(oldCategoryId, newCategoryId, userId);
     }
 

@@ -20,12 +20,13 @@
 
     <HBox spacing="10">
         <Label>Замінити категорію після видалення на: </Label>
-        <ComboBox fx:id="newCategoryComboBox" promptText="Не обрано"/>
+        <ComboBox fx:id="newCategoryComboBox" promptText="Оберіть категорію для заміни"/>
     </HBox>
 
     <HBox spacing="15" styleClass="hbox-buttons" alignment="CENTER">
         <Button onAction="#onCancelButton">Скасувати</Button>
         <Button onAction="#onConfirmDeleteButton">Видалити</Button>
+        <Button onAction="#onClearButton">Очистити</Button>
     </HBox>
 
     <HBox alignment="CENTER">
