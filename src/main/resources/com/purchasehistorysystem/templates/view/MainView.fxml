@@ -14,8 +14,17 @@
             <Label styleClass="title" alignment="CENTER">Історія покупок</Label>
             <HBox spacing="50" alignment="CENTER_LEFT" styleClass="hbox-top">
                 <ComboBox promptText="Категорія" fx:id="categoryFilter" onAction="#onCategoryFilter"/>
-                <DatePicker promptText="Оберіть першу дату" fx:id="rangeFromDate" onAction="#onDateFilter" editable="false"/>
-                <DatePicker promptText="Оберіть другу дату" fx:id="rangeToDate" onAction="#onDateFilter" editable="false"/>
+
+                <StackPane alignment="CENTER_RIGHT">
+                    <DatePicker promptText="Оберіть першу дату" fx:id="rangeFromDate" onAction="#onDateFilter" editable="false"/>
+                    <Button fx:id="clearFromDateButton" onAction="#clearFromDate" visible="false" styleClass="clear-date-filter-button">X</Button>
+                </StackPane>
+
+                <StackPane alignment="CENTER_RIGHT">
+                    <DatePicker promptText="Оберіть другу дату" fx:id="rangeToDate" onAction="#onDateFilter" editable="false"/>
+                    <Button fx:id="clearToDateButton" onAction="#clearToDate" visible="false" styleClass="clear-date-filter-button">X</Button>
+                </StackPane>
+
                 <TextField promptText="Введіть першу ціну" fx:id="rangeMinPriceField"/>
                 <TextField promptText="Введіть другу ціну" fx:id="rangeMaxPriceField"/>
             </HBox>

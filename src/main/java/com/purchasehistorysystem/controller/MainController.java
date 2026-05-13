@@ -39,8 +39,10 @@ public class MainController {
     @FXML private TextField rangeMaxPriceField;
     @FXML private ScrollPane purchaseScrollPane;
     @FXML private Label emptyPlaceholder;
+    @FXML private Button clearFromDateButton;
+    @FXML private Button clearToDateButton;
 
-    private List<CheckBox> checkBoxes = new ArrayList<>();
+    private final List<CheckBox> checkBoxes = new ArrayList<>();
 
     private  final PurchaseService purchaseService = new PurchaseService();
     private final CategoryService categoryService = new CategoryService();
@@ -178,8 +180,20 @@ public class MainController {
         loadCategories();
         applyFilters();
 
-        rangeMinPriceField.textProperty().addListener((observable, oldValue, newValue) -> usePriceFilter());
-        rangeMaxPriceField.textProperty().addListener((observable, oldValue, newValue) -> usePriceFilter());
+        rangeMinPriceField.textProperty().addListener((observable, oldValue, newValue) -> {
+            usePriceFilter();
+        });
+        rangeMaxPriceField.textProperty().addListener((observable, oldValue, newValue) -> {
+            usePriceFilter();
+        });
+
+        rangeFromDate.valueProperty().addListener((observable, oldValue, newValue) -> {
+            clearFromDateButton.setVisible(newValue != null);
+        });
+
+        rangeToDate.valueProperty().addListener((observable, oldValue, newValue) -> {
+            clearToDateButton.setVisible(newValue != null);
+        });
     }
 
     @FXML public void onCategoryFilter() {
@@ -213,19 +227,28 @@ public class MainController {
         }
 
         catch (SQLException exception) {
-            exception.printStackTrace();
             if (categoryFilter.getScene() != null) {
                 showError("Помилка при фільтрації");
             }
         }
 
         catch (NumberFormatException exception) {
-            exception.printStackTrace();
-
             if (categoryFilter.getScene() != null) {
                 showError("Введені значення мають бути невід'ємними числами");
             }
         }
+    }
+
+    @FXML private void clearFromDate() {
+        rangeFromDate.setValue(null);
+        clearFromDateButton.setVisible(false);
+        onDateFilter();
+    }
+
+    @FXML private void clearToDate() {
+        rangeToDate.setValue(null);
+        clearToDateButton.setVisible(false);
+        onDateFilter();
     }
 
     @FXML public void onAddButton() {

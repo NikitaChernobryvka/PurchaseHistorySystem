@@ -84,3 +84,18 @@
     -fx-font-size: 18px;
     -fx-font-weight: bold;
 }
+
+.clear-date-filter-button {
+    -fx-translate-x: -40;
+    -fx-background-color: transparent;
+}
+
+.clear-date-filter-button:hover {
+    -fx-text-fill: red;
+    -fx-background-color: transparent;
+}
+
+.clear-date-filter-button:pressed {
+    -fx-text-fill: #B22222;
+    -fx-background-color: transparent;
+}
