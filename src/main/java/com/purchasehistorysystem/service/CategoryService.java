@@ -37,7 +37,7 @@ public class CategoryService {
 
         for (DefaultCategory defaultCategory : DefaultCategory.values()) {
             Category newCategory = new Category(0, defaultCategory.getCategoryName(),
-                    defaultCategory.getIconPath(), userId);
+                    defaultCategory.getIconPath(), userId, "Default");
 
             categoryRepository.addCategory(newCategory, userId);
         }
@@ -52,7 +52,7 @@ public class CategoryService {
 
         String iconPathDatabase = "/com/purchasehistorysystem/icons/custom/user_" + userId + "/" + iconName;
 
-        Category category = new Category(0, name, iconPathDatabase, userId);
+        Category category = new Category(0, name, iconPathDatabase, userId, "Custom");
         categoryRepository.addCategory(category, userId);
     }
 
@@ -88,5 +88,18 @@ public class CategoryService {
         int userId = UserSessionUtils.getCurrentUser().getId();
 
         categoryRepository.updateIconPath(oldIconPath, newIconPath, userId);
+    }
+
+    public List<Category> getOnlyCustomCategories() throws SQLException {
+        List<Category> categories = getCategoriesForSelection();
+        List<Category> customCategories = new ArrayList<>();
+
+        for (Category category : categories) {
+            if ("Custom".equals(category.getType())) {
+                customCategories.add(category);
+            }
+        }
+
+        return customCategories;
     }
 }

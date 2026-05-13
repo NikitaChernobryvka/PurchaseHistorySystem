@@ -24,16 +24,19 @@ public class DeleteCategoryController {
     @FXML private Label errorLabel;
 
     private final CategoryService categoryService = new CategoryService();
-    private ObservableList<Category> observableCategories;
+    private ObservableList<Category> observableAllCategories;
+    private ObservableList<Category> observableCustomCategories;
     private boolean update = false;
 
     private void loadCategories() {
         try {
-            List<Category> categories = categoryService.getCategoriesForSelection();
+            List<Category> allCategories = categoryService.getCategoriesForSelection();
+            List<Category> customCategories = categoryService.getOnlyCustomCategories();
 
-            observableCategories = FXCollections.observableArrayList(categories);
+            observableAllCategories = FXCollections.observableArrayList(allCategories);
+            observableCustomCategories = FXCollections.observableArrayList(customCategories);
 
-            deleteCategoryComboBox.setItems(observableCategories);
+            deleteCategoryComboBox.setItems(observableCustomCategories);
 
             updateNewCategoryComboBox(null);
         }
@@ -50,7 +53,7 @@ public class DeleteCategoryController {
 
         List<String> categoryNames = new ArrayList<>();
 
-        for (Category category : observableCategories) {
+        for (Category category : observableAllCategories) {
             if (selectedToDelete == null || category.getId() != selectedToDelete.getId()) {
                 categoryNames.add(category.getName());
             }
@@ -72,7 +75,7 @@ public class DeleteCategoryController {
 
         List<Category> filteredToDelete = new ArrayList<>();
 
-        for (Category category : observableCategories) {
+        for (Category category : observableCustomCategories) {
             if (!category.getName().equals(selectedToReplace)) {
                 filteredToDelete.add(category);
             }
@@ -148,7 +151,7 @@ public class DeleteCategoryController {
             if (deleteCategoryAlertController.isConfirm()) {
                 Integer newCategoryId = null;
 
-                for (Category category : observableCategories) {
+                for (Category category : observableAllCategories) {
                     if (category.getName().equals(newCategoryName)) {
                         newCategoryId = category.getId();
                         break;
@@ -183,7 +186,7 @@ public class DeleteCategoryController {
         deleteCategoryComboBox.getSelectionModel().clearSelection();
         newCategoryComboBox.getSelectionModel().clearSelection();
 
-        deleteCategoryComboBox.setItems(observableCategories);
+        deleteCategoryComboBox.setItems(observableCustomCategories);
         updateNewCategoryComboBox(null);
 
         clearStyles();

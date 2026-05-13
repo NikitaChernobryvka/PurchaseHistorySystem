@@ -15,7 +15,7 @@ public class PurchaseRepository {
             return new Category(0,
                     "Видалено",
                     "/com/purchasehistorysystem/icons/default/DeletedIcon.png",
-                    userId);
+                    userId, null);
         }
 
         String sqlQuery = "SELECT * FROM categories WHERE id = ? AND user_id = ?";
@@ -32,12 +32,13 @@ public class PurchaseRepository {
                 return new Category(resultSet.getInt("id"),
                         resultSet.getString("name"),
                         resultSet.getString("icon_path"),
-                        resultSet.getInt("user_id"));
+                        resultSet.getInt("user_id"),
+                        resultSet.getString("type"));
             }
             return new Category(0,
                     "Видалено",
                     "/com/purchasehistorysystem/icons/default/DeletedIcon.png",
-                    userId);
+                    userId, null);
         }
     }
 

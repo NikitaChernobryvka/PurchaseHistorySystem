@@ -11,7 +11,7 @@ public class CategoryRepository {
     public List<Category> getAllCategories(int userId) throws SQLException {
         List<Category> categories = new ArrayList<>();
 
-        categories.add(new Category(0, "Всі", null, 0));
+        categories.add(new Category(0, "Всі", null, 0, null));
 
         String sqlQuery = "SELECT * FROM categories WHERE user_id = ?";
 
@@ -25,7 +25,8 @@ public class CategoryRepository {
                 Category category = new Category(resultSet.getInt("id"),
                         resultSet.getString("name"),
                         resultSet.getString("icon_path"),
-                        resultSet.getInt("user_id"));
+                        resultSet.getInt("user_id"),
+                        resultSet.getString("type"));
 
                 categories.add(category);
             }
@@ -34,7 +35,7 @@ public class CategoryRepository {
     }
 
     public void addCategory(Category category, int userId) throws  SQLException {
-        String sqlQuery = "INSERT INTO categories (name, icon_path, user_id) VALUES (?, ?, ?)";
+        String sqlQuery = "INSERT INTO categories (name, icon_path, user_id, type) VALUES (?, ?, ?, ?)";
 
         try (
                 Connection connection = Database.databaseConnection();
@@ -43,6 +44,7 @@ public class CategoryRepository {
             preparedStatement.setString(1, category.getName());
             preparedStatement.setString(2, category.getIconPath());
             preparedStatement.setInt(3, userId);
+            preparedStatement.setString(4, category.getType());
             preparedStatement.executeUpdate();
         }
     }

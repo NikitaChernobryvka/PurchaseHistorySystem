@@ -107,6 +107,9 @@ public class AddPurchaseController {
 
     @FXML public void onAddCategoryButton() {
         try {
+            Category selectedCategory = categoryComboBox.getValue();
+            Integer selectedCategoryId = selectedCategory != null ? selectedCategory.getId() : null;
+
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(
                     "/com/purchasehistorysystem/templates/dialog/AddCategoryDialog.fxml")
             );
@@ -123,6 +126,22 @@ public class AddPurchaseController {
             dialogStage.showAndWait();
 
             loadCategories();
+
+            if (selectedCategoryId != null) {
+                boolean found = false;
+                for (Category category : categoryComboBox.getItems()) {
+                    if (category.getId() == selectedCategoryId) {
+                        categoryComboBox.setValue(category);
+                        found = true;
+                        break;
+                    }
+                }
+
+                if (!found && !categoryComboBox.getItems().isEmpty()) {
+                    Category firsItem = categoryComboBox.getItems().getFirst();
+                    categoryComboBox.setValue(firsItem);
+                }
+            }
         }
 
         catch (IOException exception) {
@@ -132,6 +151,9 @@ public class AddPurchaseController {
 
     @FXML public void onDeleteCategoryButton() {
         try {
+            Category selectedCategory = categoryComboBox.getValue();
+            Integer selectedCategoryId = selectedCategory != null ? selectedCategory.getId() : null;
+
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(
                     "/com/purchasehistorysystem/templates/dialog/DeleteCategoryDialog.fxml")
             );
@@ -146,6 +168,24 @@ public class AddPurchaseController {
             dialogStage.setScene(dialogScene);
             dialogStage.setWidth(500);
             dialogStage.showAndWait();
+
+            loadCategories();
+
+            if (selectedCategoryId != null) {
+                boolean found = false;
+                for (Category category : categoryComboBox.getItems()) {
+                    if (category.getId() == selectedCategoryId) {
+                        categoryComboBox.setValue(category);
+                        found = true;
+                        break;
+                    }
+                }
+
+                if (!found && !categoryComboBox.getItems().isEmpty()) {
+                    Category firstItem = categoryComboBox.getItems().getFirst();
+                    categoryComboBox.setValue(firstItem);
+                }
+            }
         }
 
         catch (IOException exception) {

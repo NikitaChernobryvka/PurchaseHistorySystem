@@ -5,12 +5,14 @@ public class Category {
     private String name;
     private String iconPath;
     private int userId;
+    private String type;
 
-    public Category(int id, String name, String iconPath, int userId) {
+    public Category(int id, String name, String iconPath, int userId, String type) {
         this.id = id;
         this.name = name;
         this.iconPath = iconPath;
         this.userId = userId;
+        this.type = type;
     }
 
     public int getId() {
@@ -45,9 +47,16 @@ public class Category {
         this.userId = userId;
     }
 
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
     @Override
     public String toString() {
         return name;
     }
 }
-
