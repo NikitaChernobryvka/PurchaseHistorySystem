@@ -165,17 +165,6 @@ public class MainController {
         }
     }
 
-    private void loadPurchases() {
-        try {
-            List<Purchase> purchaseList = purchaseService.getAllPurchases();
-            showPurchases(purchaseList);
-        }
-
-        catch (SQLException exception) {
-            showError("Помилка при отриманні списку покупок");
-        }
-    }
-
     @FXML public void initialize() {
         try {
             int userId = UserSessionUtils.getCurrentUser().getId();
@@ -187,46 +176,55 @@ public class MainController {
         }
 
         loadCategories();
-        loadPurchases();
+        applyFilters();
 
         rangeMinPriceField.textProperty().addListener((observable, oldValue, newValue) -> usePriceFilter());
         rangeMaxPriceField.textProperty().addListener((observable, oldValue, newValue) -> usePriceFilter());
     }
 
     @FXML public void onCategoryFilter() {
-        Category selectedCategory = categoryFilter.getValue();
-
-        if (selectedCategory == null || selectedCategory.getId() == 0) {
-            loadPurchases();
-            return;
-        }
-
-        try {
-            List<Purchase> purchaseList = purchaseService.filterByCategory(selectedCategory.getId());
-            showPurchases(purchaseList);
-        }
-
-        catch (SQLException exception) {
-            showError("Помилка при сортуванні за категорією");
-        }
+        applyFilters();
     }
 
     @FXML public void onDateFilter() {
-        LocalDate from = rangeFromDate.getValue();
-        LocalDate to = rangeToDate.getValue();
+        applyFilters();
+    }
 
-        if (from == null || to == null) {
-            loadPurchases();
-            return;
-        }
+    private void usePriceFilter() {
+        applyFilters();
+    }
 
+    private void applyFilters() {
         try {
-            List<Purchase> purchaseList = purchaseService.filterByDateRange(from, to);
+            Category selectedCategory = categoryFilter.getValue();
+            Integer selectedCategoryId = selectedCategory != null && selectedCategory.getId() != 0 ? selectedCategory.getId() : null;
+
+            LocalDate from = rangeFromDate.getValue();
+            LocalDate to = rangeToDate.getValue();
+
+            String minPriceText = rangeMinPriceField.getText().trim();
+            String maxPriceText = rangeMaxPriceField.getText().trim();
+
+            double minPrice = minPriceText.isBlank() ? 0 : Double.parseDouble(minPriceText);
+            double maxPrice = maxPriceText.isBlank() ? Double.MAX_VALUE : Double.parseDouble(maxPriceText);
+
+            List<Purchase> purchaseList = purchaseService.filter(selectedCategoryId, from, to, minPrice, maxPrice);
             showPurchases(purchaseList);
         }
 
         catch (SQLException exception) {
-            showError("Помилка при сортуванні за датою");
+            exception.printStackTrace();
+            if (categoryFilter.getScene() != null) {
+                showError("Помилка при фільтрації");
+            }
+        }
+
+        catch (NumberFormatException exception) {
+            exception.printStackTrace();
+
+            if (categoryFilter.getScene() != null) {
+                showError("Введені значення мають бути невід'ємними числами");
+            }
         }
     }
 
@@ -261,7 +259,7 @@ public class MainController {
                 }
             }
 
-            onCategoryFilter();
+            applyFilters();
         }
 
         catch (IOException exception) {
@@ -288,7 +286,7 @@ public class MainController {
         }
 
         if (deleted) {
-            onCategoryFilter();
+            applyFilters();
         }
     }
 
@@ -337,33 +335,6 @@ public class MainController {
 
         catch (IOException exception) {
             showError("Помилка при зміні вікна");
-        }
-    }
-
-    private void usePriceFilter() {
-        try {
-            String minPriceText = rangeMinPriceField.getText().trim();
-            String maxPriceText = rangeMaxPriceField.getText().trim();
-
-            if (minPriceText.isBlank() && maxPriceText.isBlank()) {
-                loadPurchases();
-                return;
-            }
-
-            double minPrice = minPriceText.isBlank() ? 0 : Double.parseDouble(minPriceText);
-            double maxPrice = maxPriceText.isBlank() ? Double.MAX_VALUE : Double.parseDouble(maxPriceText);
-
-            List<Purchase> purchaseList = purchaseService.filterByPriceRange(minPrice, maxPrice);
-            showPurchases(purchaseList);
-
-        }
-
-        catch (SQLException exception) {
-            showError("Помилка під час фільтрації за ціною");
-        }
-
-        catch (NumberFormatException exception) {
-            showError("Введені значення мають бути додатними числами");
         }
     }
 
