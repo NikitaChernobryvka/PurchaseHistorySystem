@@ -183,11 +183,17 @@ public class DeleteCategoryController {
     @FXML public void onClearButton() {
         update = true;
 
-        deleteCategoryComboBox.getSelectionModel().clearSelection();
-        newCategoryComboBox.getSelectionModel().clearSelection();
-
         deleteCategoryComboBox.setItems(observableCustomCategories);
-        updateNewCategoryComboBox(null);
+
+        if (!observableCustomCategories.isEmpty()) {
+            deleteCategoryComboBox.getSelectionModel().selectFirst();
+            updateNewCategoryComboBox(observableCustomCategories.getFirst());
+        }
+
+        if (!newCategoryComboBox.getItems().isEmpty()) {
+            newCategoryComboBox.getSelectionModel().selectFirst();
+            updateDeleteCategoryComboBox(newCategoryComboBox.getValue());
+        }
 
         clearStyles();
         errorLabel.setText("");

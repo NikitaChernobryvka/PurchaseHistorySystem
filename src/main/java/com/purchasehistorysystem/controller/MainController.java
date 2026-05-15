@@ -384,4 +384,21 @@ public class MainController {
             System.out.println("Критична помилка");
         }
     }
+
+    @FXML public void clearAllFilters() {
+        if (!categoryFilter.getItems().isEmpty()) {
+            categoryFilter.getSelectionModel().selectFirst();
+        }
+
+        rangeFromDate.setValue(null);
+        rangeToDate.setValue(null);
+
+        clearFromDateButton.setVisible(false);
+        clearToDateButton.setVisible(false);
+
+        rangeMinPriceField.clear();
+        rangeMaxPriceField.clear();
+
+        applyFilters();
+    }
 }

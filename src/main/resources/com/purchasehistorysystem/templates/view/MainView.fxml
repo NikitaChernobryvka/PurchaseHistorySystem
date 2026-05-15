@@ -27,6 +27,8 @@
 
                 <TextField promptText="Введіть першу ціну" fx:id="rangeMinPriceField"/>
                 <TextField promptText="Введіть другу ціну" fx:id="rangeMaxPriceField"/>
+
+                <Button onAction="#clearAllFilters">Очистити</Button>
             </HBox>
         </VBox>
     </top>
