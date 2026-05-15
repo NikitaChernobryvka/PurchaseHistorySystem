@@ -17,11 +17,6 @@ public class PurchaseService {
         return UserSessionUtils.getCurrentUser().getId();
     }
 
-    public List<Purchase> getAllPurchases() throws SQLException {
-        int userId = getCurrentUserId();
-        return purchaseRepository.getAllPurchases(userId);
-    }
-
     public void addPurchase(String name, Category category, double price, int amount) throws SQLException, IllegalArgumentException {
         if (name.isBlank() || category == null) {
             throw new IllegalArgumentException("Заповніть всі поля та оберіть категорію");

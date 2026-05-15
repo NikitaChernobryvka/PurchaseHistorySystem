@@ -13,8 +13,9 @@ public class AnalyticsRepository {
         Map<String, Double> categoryExpenses = new HashMap<>();
 
         String sqlQuery = "SELECT categories.name, SUM(purchases.price * purchases.amount) as total " +
-                "FROM purchases, categories WHERE purchases.category_id = categories.id " +
-                "AND purchases.user_id = ? AND purchases.purchase_date >= ? AND purchases.purchase_date <= ? " +
+                "FROM purchases JOIN categories ON purchases.category_id = categories.id " +
+                "WHERE purchases.user_id = ? AND purchases.purchase_date >= ? AND " +
+                "purchases.purchase_date <= ? " +
                 "GROUP BY categories.name";
 
         try (
@@ -63,8 +64,9 @@ public class AnalyticsRepository {
         Map<String, Integer> categoryCount = new LinkedHashMap<>();
 
         String sqlQuery = "SELECT categories.name, COUNT(purchases.id) as purchase_count " +
-                "FROM purchases, categories WHERE purchases.category_id = categories.id " +
-                "AND purchases.user_id = ? AND purchases.purchase_date >= ? AND purchases.purchase_date <= ? " +
+                "FROM purchases JOIN categories ON purchases.category_id = categories.id " +
+                "WHERE purchases.user_id = ? AND purchases.purchase_date >= ? AND " +
+                "purchases.purchase_date <= ? " +
                 "GROUP BY categories.name ORDER BY purchase_count DESC";
 
         try (
