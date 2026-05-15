@@ -201,7 +201,7 @@ public class PurchaseRepository {
                 "(?::date IS NULL OR purchase_date >= ?::date) AND " +
                 "(?::date IS NULL OR purchase_date <= ?::date) AND " +
                 "price BETWEEN ? AND ? " +
-                "ORDER BY purchase_date DESC";
+                "ORDER BY purchase_date DESC, id DESC";
 
         try (
                 Connection connection = Database.databaseConnection();
