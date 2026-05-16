@@ -3,6 +3,8 @@ package com.purchasehistorysystem.controller;
 import com.purchasehistorysystem.model.Category;
 import com.purchasehistorysystem.service.CategoryService;
 import com.purchasehistorysystem.service.PurchaseService;
+import com.purchasehistorysystem.util.TaskExecutor;
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -28,17 +30,43 @@ public class AddPurchaseController {
     private final CategoryService categoryService = new CategoryService();
 
     private void loadCategories() {
-        try {
+        loadCategories(null);
+    }
+
+    private void loadCategories(Integer selectedCategoryId) {
+        Task<List<Category>> task = new Task<>() {
+            @Override
+            protected List<Category> call() throws SQLException {
+                return categoryService.getCategoriesForSelection();
+            }
+        };
+
+        task.setOnSucceeded(event -> {
             categoryComboBox.getItems().clear();
+            categoryComboBox.getItems().addAll(task.getValue());
 
-            List<Category> categories = categoryService.getCategoriesForSelection();
+            if (selectedCategoryId != null) {
+                boolean found = false;
+                for (Category category : categoryComboBox.getItems()) {
+                    if (category.getId() == selectedCategoryId) {
+                        categoryComboBox.setValue(category);
+                        found = true;
+                        break;
+                    }
+                }
 
-            categoryComboBox.getItems().addAll(categories);
-        }
+                if (!found && !categoryComboBox.getItems().isEmpty()) {
+                    Category firstItem = categoryComboBox.getItems().getFirst();
+                    categoryComboBox.setValue(firstItem);
+                }
+            }
+        });
 
-        catch (SQLException exception) {
+        task.setOnFailed(event -> {
             errorLabel.setText("Помилка при завантаженні категорій");
-        }
+        });
+
+        TaskExecutor.getPool().submit(task);
     }
 
     @FXML public void initialize() {
@@ -69,40 +97,60 @@ public class AddPurchaseController {
 
         try {
              price = Double.parseDouble(priceString);
-             amount = Integer.parseInt(amountString);
         }
 
         catch (NumberFormatException exception) {
-            errorLabel.setText("Вартість та кількість мають бути числами");
-            invalidPriceAndAmount();
+            errorLabel.setText("Вартість має бути числом");
+            priceError();
             return;
         }
 
         try {
-            purchaseService.addPurchase(name, category, price, amount);
+            amount = Integer.parseInt(amountString);
+        }
+
+        catch (NumberFormatException exception) {
+            errorLabel.setText("Кількість має бути цілим числом");
+            amountError();
+            return;
+        }
+
+        Task<Void> task = new Task<>() {
+            @Override
+            protected Void call() throws SQLException {
+                purchaseService.addPurchase(name, category, price, amount);
+                return null;
+            }
+        };
+
+        task.setOnSucceeded(event -> {
             onCancelButton();
-        }
+        });
 
-        catch (SQLException exception) {
-            errorLabel.setText("Помилка при збереженні покупки");
-        }
+        task.setOnFailed(event -> {
+            if (task.getException() instanceof IllegalArgumentException) {
+                String errorMessage = task.getException().getMessage();
+                errorLabel.setText(errorMessage);
 
-        catch (IllegalArgumentException exception) {
-            String errorMessage = exception.getMessage();
-            errorLabel.setText(errorMessage);
+                if (errorMessage.contains("Заповніть всі поля та оберіть категорію")) {
+                    fillAllFieldsError();
+                }
 
-            if (errorMessage.contains("Заповніть всі поля та оберіть категорію")) {
-                fillAllFieldsError();
+                if (errorMessage.contains("Вартість та кількість мають бути більшими за нуль")) {
+                    invalidPriceAndAmount();
+                }
+
+                if (errorMessage.contains("Вартість не може перевищувати значення 999999.99")) {
+                    priceError();
+                }
             }
 
-            if (errorMessage.contains("Вартість та кількість мають бути більшими за нуль")) {
-                invalidPriceAndAmount();
+            else {
+                errorLabel.setText("Помилка при збереженні покупки");
             }
+        });
 
-            if (errorMessage.contains("Вартість не може перевищувати значення 999999.99")) {
-                veryHighPriceError();
-            }
-        }
+        TaskExecutor.getPool().submit(task);
     }
 
     @FXML public void onAddCategoryButton() {
@@ -125,23 +173,7 @@ public class AddPurchaseController {
             dialogStage.setWidth(500);
             dialogStage.showAndWait();
 
-            loadCategories();
-
-            if (selectedCategoryId != null) {
-                boolean found = false;
-                for (Category category : categoryComboBox.getItems()) {
-                    if (category.getId() == selectedCategoryId) {
-                        categoryComboBox.setValue(category);
-                        found = true;
-                        break;
-                    }
-                }
-
-                if (!found && !categoryComboBox.getItems().isEmpty()) {
-                    Category firsItem = categoryComboBox.getItems().getFirst();
-                    categoryComboBox.setValue(firsItem);
-                }
-            }
+            loadCategories(selectedCategoryId);
         }
 
         catch (IOException exception) {
@@ -169,23 +201,7 @@ public class AddPurchaseController {
             dialogStage.setWidth(500);
             dialogStage.showAndWait();
 
-            loadCategories();
-
-            if (selectedCategoryId != null) {
-                boolean found = false;
-                for (Category category : categoryComboBox.getItems()) {
-                    if (category.getId() == selectedCategoryId) {
-                        categoryComboBox.setValue(category);
-                        found = true;
-                        break;
-                    }
-                }
-
-                if (!found && !categoryComboBox.getItems().isEmpty()) {
-                    Category firstItem = categoryComboBox.getItems().getFirst();
-                    categoryComboBox.setValue(firstItem);
-                }
-            }
+            loadCategories(selectedCategoryId);
         }
 
         catch (IOException exception) {
@@ -205,8 +221,12 @@ public class AddPurchaseController {
         amountField.getStyleClass().add("error-field");
     }
 
-    private void veryHighPriceError() {
+    private void priceError() {
         priceField.getStyleClass().add("error-field");
+    }
+
+    private void amountError() {
+        amountField.getStyleClass().add("error-field");
     }
 
     private void clearFieldsStyle() {

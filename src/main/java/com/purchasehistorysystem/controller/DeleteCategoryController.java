@@ -2,8 +2,10 @@ package com.purchasehistorysystem.controller;
 
 import com.purchasehistorysystem.model.Category;
 import com.purchasehistorysystem.service.CategoryService;
+import com.purchasehistorysystem.util.TaskExecutor;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -29,21 +31,29 @@ public class DeleteCategoryController {
     private boolean update = false;
 
     private void loadCategories() {
-        try {
-            List<Category> allCategories = categoryService.getCategoriesForSelection();
-            List<Category> customCategories = categoryService.getOnlyCustomCategories();
+        Task<Void> task = new Task<>() {
+            @Override
+            protected Void call() throws SQLException {
+                List<Category> allCategories = categoryService.getCategoriesForSelection();
+                List<Category> customCategories = categoryService.getOnlyCustomCategories();
 
-            observableAllCategories = FXCollections.observableArrayList(allCategories);
-            observableCustomCategories = FXCollections.observableArrayList(customCategories);
+                observableAllCategories = FXCollections.observableArrayList(allCategories);
+                observableCustomCategories = FXCollections.observableArrayList(customCategories);
 
+                return null;
+            }
+        };
+
+        task.setOnSucceeded(event -> {
             deleteCategoryComboBox.setItems(observableCustomCategories);
-
             updateNewCategoryComboBox(null);
-        }
+        });
 
-        catch (SQLException exception) {
+        task.setOnFailed(event -> {
             errorLabel.setText("Помилка при заповненні випадаючого списку");
-        }
+        });
+
+        TaskExecutor.getPool().submit(task);
     }
 
     private void updateNewCategoryComboBox(Category selectedToDelete) {
@@ -158,16 +168,29 @@ public class DeleteCategoryController {
                     }
                 }
 
+                final Integer newCategoryIdFinal = newCategoryId;
 
-                categoryService.deleteCategory(deleteCategory.getId(), newCategoryId);
-                close();
+                Task<Void> task = new Task<>() {
+                    @Override
+                    protected Void call() throws SQLException {
+                        categoryService.deleteCategory(deleteCategory.getId(), newCategoryIdFinal);
+                        return null;
+                    }
+                };
+
+                task.setOnSucceeded(event -> {
+                    close();
+                });
+
+                task.setOnFailed(event -> {
+                    errorLabel.setText("Помилка при видаленні категорії");
+                });
+
+                TaskExecutor.getPool().submit(task);
             }
         }
         catch (IOException exception) {
             errorLabel.setText("Помилка при відкритті вікна");
-        }
-        catch (SQLException exception) {
-            errorLabel.setText("Помилка при видаленні категорії");
         }
     }
 

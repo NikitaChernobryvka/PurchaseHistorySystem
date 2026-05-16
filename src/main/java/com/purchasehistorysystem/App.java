@@ -3,6 +3,7 @@ package com.purchasehistorysystem;
 import com.purchasehistorysystem.model.User;
 import com.purchasehistorysystem.service.UserService;
 import com.purchasehistorysystem.util.AuthTokenStorage;
+import com.purchasehistorysystem.util.TaskExecutor;
 import com.purchasehistorysystem.util.UserSessionUtils;
 import javafx.application.Application;
 import javafx.stage.Stage;
@@ -60,5 +61,10 @@ public class App extends Application {
     public static Parent loadFxml(String fxml) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource("/com/purchasehistorysystem/templates/view/" + fxml + ".fxml"));
         return fxmlLoader.load();
+    }
+
+    @Override
+    public void stop() {
+        TaskExecutor.shutdown();
     }
 }

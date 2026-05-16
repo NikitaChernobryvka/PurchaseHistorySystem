@@ -20,6 +20,10 @@ public class UserService {
             throw new IllegalArgumentException("Ім'я користувача не має бути меншим за 4 символи");
         }
 
+        if (username.length() > 30) {
+            throw new IllegalArgumentException("Ім'я користувача не має бути більшим за 30 символів");
+        }
+
         String passwordRegex = "^(?=.*[A-Z])(?=.*[^a-zA-Z]).{8,}$";
 
         if (!password.matches(passwordRegex)) {

@@ -1,7 +1,9 @@
 package com.purchasehistorysystem.controller;
 
 import com.purchasehistorysystem.service.CategoryService;
+import com.purchasehistorysystem.util.TaskExecutor;
 import com.purchasehistorysystem.util.UserSessionUtils;
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
@@ -114,18 +116,30 @@ public class AddCategoryController {
             return;
         }
 
-        try {
-            categoryService.addCustomCategory(name, selectedIcon);
+        Task<Void> task = new Task<>() {
+            @Override
+            protected Void call() throws SQLException {
+                categoryService.addCustomCategory(name, selectedIcon);
+                return null;
+            }
+        };
+
+        task.setOnSucceeded(event -> {
             onCancelButton();
-        }
+        });
 
-        catch (IllegalArgumentException exception) {
-            errorLabel.setText(exception.getMessage());
-        }
+        task.setOnFailed(event -> {
+            if (task.getException() instanceof IllegalArgumentException) {
+                String errorMessage = task.getException().getMessage();
+                errorLabel.setText(errorMessage);
+            }
 
-        catch (SQLException exception) {
-            errorLabel.setText("Помилка при збереженні нової категорії");
-        }
+            else {
+                errorLabel.setText("Помилка при збереженні нової категорії");
+            }
+        });
+
+        TaskExecutor.getPool().submit(task);
     }
 
     @FXML public void onDeleteIconButton() {
@@ -148,11 +162,18 @@ public class AddCategoryController {
             boolean deleted = deleteFile.delete();
 
             if (deleted) {
-                try {
-                    String fullPath = "/com/purchasehistorysystem/icons/custom/user_" + userId + "/" + selectedIcon;
-                    String newIconPath = "/com/purchasehistorysystem/icons/default/DeletedIcon.png";
-                    categoryService.updateDeletedIcon(fullPath, newIconPath);
+                String fullPath = "/com/purchasehistorysystem/icons/custom/user_" + userId + "/" + selectedIcon;
+                String newIconPath = "/com/purchasehistorysystem/icons/default/DeletedIcon.png";
 
+                Task<Void> task = new Task<>() {
+                    @Override
+                    protected Void call() throws SQLException {
+                        categoryService.updateDeletedIcon(fullPath, newIconPath);
+                        return null;
+                    }
+                };
+
+                task.setOnSucceeded(event -> {
                     loadIconsFromFolder(iconsDir);
 
                     if (!categoryIconComboBox.getItems().isEmpty()) {
@@ -162,11 +183,13 @@ public class AddCategoryController {
                     else {
                         categoryIconComboBox.setValue(null);
                     }
-                }
+                });
 
-                catch (SQLException exception) {
+                task.setOnFailed(event -> {
                     errorLabel.setText("Помилка при оновленні шляхів після видалення іконки");
-                }
+                });
+
+                TaskExecutor.getPool().submit(task);
             }
 
             else {

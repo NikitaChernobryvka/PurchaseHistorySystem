@@ -7,7 +7,9 @@ import com.purchasehistorysystem.service.CategoryService;
 import com.purchasehistorysystem.service.PurchaseService;
 import com.purchasehistorysystem.service.UserService;
 import com.purchasehistorysystem.util.AuthTokenStorage;
+import com.purchasehistorysystem.util.TaskExecutor;
 import com.purchasehistorysystem.util.UserSessionUtils;
+import javafx.concurrent.Task;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -48,16 +50,44 @@ public class MainController {
     private final CategoryService categoryService = new CategoryService();
     private final UserService userService = new UserService();
 
-    private void loadCategories() {
-        try {
-            List<Category> categoryList = categoryService.getCustomCategories();
-            categoryFilter.getItems().clear();
-            categoryFilter.getItems().addAll(categoryList);
-        }
+    private boolean filterUpdating = false;
 
-        catch (SQLException exception) {
+    private void loadCategories() {
+        loadCategories(null);
+    }
+
+    private void loadCategories(Integer selectedCategoryId) {
+        Task<List<Category>> task = new Task<>() {
+            @Override
+            protected List<Category> call() throws SQLException {
+                return categoryService.getCustomCategories();
+            }
+        };
+
+        task.setOnSucceeded(event -> {
+            filterUpdating = true;
+
+            categoryFilter.getItems().clear();
+            categoryFilter.getItems().addAll(task.getValue());
+
+            if (selectedCategoryId != null) {
+                for (Category category : categoryFilter.getItems()) {
+                    if (category.getId() == selectedCategoryId) {
+                        categoryFilter.setValue(category);
+                        break;
+                    }
+                }
+            }
+
+            filterUpdating = false;
+            applyFilters();
+        });
+
+        task.setOnFailed(event -> {
             showError("Помилка при отриманні категорій");
-        }
+        });
+
+        TaskExecutor.getPool().submit(task);
     }
 
     private void showPurchases(List<Purchase> purchaseList) {
@@ -168,17 +198,24 @@ public class MainController {
     }
 
     @FXML public void initialize() {
-        try {
-            int userId = UserSessionUtils.getCurrentUser().getId();
-            categoryService.getDefaultCategories(userId);
-        }
+        Task<Void> task = new Task<>() {
+            @Override
+            protected Void call() throws SQLException {
+                int userId = UserSessionUtils.getCurrentUser().getId();
+                categoryService.getDefaultCategories(userId);
+                return null;
+            }
+        };
 
-        catch (SQLException exception) {
+        task.setOnSucceeded(event -> {
+            loadCategories();
+        });
+
+        task.setOnFailed(event -> {
             showError("Помилка при отриманні вбудованих категорій");
-        }
+        });
 
-        loadCategories();
-        applyFilters();
+        TaskExecutor.getPool().submit(task);
 
         rangeMinPriceField.textProperty().addListener((observable, oldValue, newValue) -> {
             usePriceFilter();
@@ -197,7 +234,9 @@ public class MainController {
     }
 
     @FXML public void onCategoryFilter() {
-        applyFilters();
+        if (!filterUpdating) {
+            applyFilters();
+        }
     }
 
     @FXML public void onDateFilter() {
@@ -222,14 +261,22 @@ public class MainController {
             double minPrice = minPriceText.isBlank() ? 0 : Double.parseDouble(minPriceText);
             double maxPrice = maxPriceText.isBlank() ? Double.MAX_VALUE : Double.parseDouble(maxPriceText);
 
-            List<Purchase> purchaseList = purchaseService.filter(selectedCategoryId, from, to, minPrice, maxPrice);
-            showPurchases(purchaseList);
-        }
+            Task<List<Purchase>> task = new Task<>() {
+                @Override
+                protected List<Purchase> call() throws SQLException {
+                    return purchaseService.filter(selectedCategoryId, from, to, minPrice, maxPrice);
+                }
+            };
 
-        catch (SQLException exception) {
-            if (categoryFilter.getScene() != null) {
+            task.setOnSucceeded(event -> {
+                showPurchases(task.getValue());
+            });
+
+            task.setOnFailed(event -> {
                 showError("Помилка при фільтрації");
-            }
+            });
+
+            TaskExecutor.getPool().submit(task);
         }
 
         catch (NumberFormatException exception) {
@@ -271,18 +318,11 @@ public class MainController {
             dialogStage.setWidth(500);
             dialogStage.showAndWait();
 
-            loadCategories();
+            purchaseHistory.getChildren().clear();
+            purchaseScrollPane.setVisible(false);
+            emptyPlaceholder.setVisible(false);
 
-            if (selectedCategoryId != null) {
-                for (Category category : categoryFilter.getItems()) {
-                    if (category.getId() == selectedCategoryId) {
-                        categoryFilter.setValue(category);
-                        break;
-                    }
-                }
-            }
-
-            applyFilters();
+            loadCategories(selectedCategoryId);
         }
 
         catch (IOException exception) {
@@ -291,26 +331,37 @@ public class MainController {
     }
 
     @FXML public void onDeleteButton() {
-        boolean deleted = false;
+        List<Purchase> purchasesToDelete = new ArrayList<>();
 
         for (CheckBox checkBox : checkBoxes) {
             if (checkBox.isSelected()) {
-                Purchase purchase = (Purchase) checkBox.getUserData();
-
-                try {
-                    purchaseService.deletePurchase(purchase.getId());
-                    deleted = true;
-                }
-
-                catch (SQLException exception) {
-                    showError("Помилка при видаленні покупки");
-                }
+                purchasesToDelete.add((Purchase) checkBox.getUserData());
             }
         }
 
-        if (deleted) {
-            applyFilters();
+        if (purchasesToDelete.isEmpty()) {
+            return;
         }
+
+        Task<Void> task = new Task<>() {
+            @Override
+            protected Void call() throws SQLException {
+                for (Purchase purchase : purchasesToDelete) {
+                    purchaseService.deletePurchase(purchase.getId());
+                }
+                return null;
+            }
+        };
+
+        task.setOnSucceeded(event -> {
+            applyFilters();
+        });
+
+        task.setOnFailed(event -> {
+            showError("Помилка при видаленні покупки");
+        });
+
+        TaskExecutor.getPool().submit(task);
     }
 
     @FXML private void onLogoutButton() {
@@ -330,18 +381,49 @@ public class MainController {
             logoutStage.showAndWait();
 
             if (logoutAlertController.isConfirm()) {
-                try {
-                    int userId = UserSessionUtils.getCurrentUser().getId();
-                    userService.updateToken(userId, null);
-                    AuthTokenStorage.clearToken();
-                }
+                int userId = UserSessionUtils.getCurrentUser().getId();
 
-                catch (Exception exception) {
-                    showError("Помилка при видаленні токену");
-                }
+                Task<Void> task = new Task<>() {
+                    @Override
+                    protected Void call() throws SQLException {
+                        userService.updateToken(userId, null);
+                        return null;
+                    }
+                };
 
-                UserSessionUtils.cleanSession();
-                App.setRoot("LoginView");
+                task.setOnSucceeded(event -> {
+                    try {
+                        AuthTokenStorage.clearToken();
+                    }
+
+                    catch (Exception exception) {
+                        showError("Помилка при видаленні токену");
+                    }
+
+                    UserSessionUtils.cleanSession();
+
+                    try {
+                        App.setRoot("LoginView");
+                    }
+
+                    catch (IOException exception) {
+                        showError("Помилка при зміні вікна");
+                    }
+                });
+
+                task.setOnFailed(event -> {
+                    UserSessionUtils.cleanSession();
+
+                    try {
+                        App.setRoot("LoginView");
+                    }
+
+                    catch (IOException exception) {
+                        showError("Помилка при зміні вікна");
+                    }
+                });
+
+                TaskExecutor.getPool().submit(task);
             }
         }
 
@@ -386,6 +468,8 @@ public class MainController {
     }
 
     @FXML public void clearAllFilters() {
+        filterUpdating = true;
+
         if (!categoryFilter.getItems().isEmpty()) {
             categoryFilter.getSelectionModel().selectFirst();
         }
@@ -398,6 +482,8 @@ public class MainController {
 
         rangeMinPriceField.clear();
         rangeMaxPriceField.clear();
+
+        filterUpdating = false;
 
         applyFilters();
     }

@@ -2,7 +2,9 @@ package com.purchasehistorysystem.controller;
 
 import com.purchasehistorysystem.App;
 import com.purchasehistorysystem.repository.AnalyticsRepository;
+import com.purchasehistorysystem.util.TaskExecutor;
 import com.purchasehistorysystem.util.UserSessionUtils;
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.print.PrinterJob;
@@ -67,52 +69,75 @@ public class AnalyticsController {
         yearComboBox.getItems().addAll(years);
     }
 
-    private void loadPieChart(LocalDate from, LocalDate to, int userId) throws SQLException {
-        Map<String, Double> data = analyticsRepository.getExpensesByCategory(from, to, userId);
+    private void loadPieChart(Map<String, Double> data) {
         expensesPieChart.getData().clear();
 
         for (String categoryName : data.keySet()) {
             Double amount = data.get(categoryName);
             String amountString = String.format("%.2f", amount);
-            String dataLabel = categoryName + "(" + amountString + " грн)";
-
+            String dataLabel = categoryName + " (" + amountString + " грн.)";
             PieChart.Data slice = new PieChart.Data(dataLabel, amount);
-
             expensesPieChart.getData().add(slice);
             expensesPieChart.setLabelsVisible(false);
         }
     }
 
-    private void loadBarChart(LocalDate from, LocalDate to, int userId) throws SQLException {
-        Map<LocalDate, Double> data = analyticsRepository.getExpensesByDate(from, to, userId);
+    private void loadBarChart(LocalDate from, LocalDate to, int userId) {
+        Task<Map<LocalDate, Double>> task = new Task<>() {
+            @Override
+            protected Map<LocalDate, Double> call() throws SQLException {
+                return analyticsRepository.getExpensesByDate(from, to, userId);
+            }
+        };
 
-        expensesBarChart.getData().clear();
+        task.setOnSucceeded(event -> {
+            expensesBarChart.getData().clear();
 
-        Series<String, Double> series = new Series<>();
-        series.setName("Витрати по дням");
+            Series<String, Double> series = new Series<>();
+            series.setName("Витрати по дням");
 
-        for (LocalDate date : data.keySet()) {
-            Double amount = data.get(date);
-            int dayOfMonth = date.getDayOfMonth();
-            String dayString = String.valueOf(dayOfMonth);
+            for (LocalDate date : task.getValue().keySet()) {
+                Double amount = task.getValue().get(date);
+                String dayString = String.valueOf(date.getDayOfMonth());
 
-            XYChart.Data<String, Double> dataPoint = new XYChart.Data<>(dayString, amount);
+                XYChart.Data<String, Double> dataPoint = new XYChart.Data<>(dayString, amount);
 
-            series.getData().add(dataPoint);
-        }
+                series.getData().add(dataPoint);
+            }
 
-        expensesBarChart.getData().add(series);
+            expensesBarChart.getData().add(series);
+        });
+
+        task.setOnFailed(event -> {
+            showError("Помилка при завантаженні стовпчастої діаграми");
+        });
+
+        TaskExecutor.getPool().submit(task);
     }
 
-    private void loadCategoryList(LocalDate from, LocalDate to, int userId) throws SQLException {
-        Map<String, Integer> data = analyticsRepository.getCategoryCount(from, to, userId);
-        categoryCountList.getItems().clear();
+    private void loadCategoryList(LocalDate from, LocalDate to, int userId) {
+       Task<Map<String, Integer>> task = new Task<>() {
+           @Override
+           protected Map<String, Integer> call() throws SQLException {
+               return analyticsRepository.getCategoryCount(from, to, userId);
+           }
+       };
 
-        for (String category : data.keySet()) {
-            int categoryCount = data.get(category);
-            String categoryCountString = category + " - " + categoryCount;
-            categoryCountList.getItems().add(categoryCountString);
-        }
+       task.setOnSucceeded(event -> {
+           categoryCountList.getItems().clear();
+
+           for (String category : task.getValue().keySet()) {
+               int categoryCount = task.getValue().get(category);
+               String categoryCountString = category + " - " + categoryCount;
+               categoryCountList.getItems().add(categoryCountString);
+           }
+       });
+
+       task.setOnFailed(event -> {
+           showError("Помилка при завантаженні списку категорій");
+       });
+
+       TaskExecutor.getPool().submit(task);
     }
 
     private void loadCharts() {
@@ -128,10 +153,17 @@ public class AnalyticsController {
         LocalDate to = yearMonth.atEndOfMonth();
         int userId = UserSessionUtils.getCurrentUser().getId();
 
-        try {
-            Map<String, Double> availabilityData = analyticsRepository.getExpensesByCategory(from, to, userId);
+        Task<Map<String, Double>> task = new Task<>() {
+            @Override
+            protected Map<String, Double> call() throws SQLException {
+                return analyticsRepository.getExpensesByCategory(from, to, userId);
+            }
+        };
 
-            if (availabilityData.isEmpty()) {
+        task.setOnSucceeded(event -> {
+            Map<String, Double> data = task.getValue();
+
+            if (task.getValue().isEmpty()) {
                 chartsContainer.setVisible(false);
                 emptyPlaceholder.setVisible(true);
             }
@@ -139,16 +171,17 @@ public class AnalyticsController {
             else {
                 chartsContainer.setVisible(true);
                 emptyPlaceholder.setVisible(false);
-
-                loadPieChart(from, to, userId);
+                loadPieChart(data);
                 loadBarChart(from, to, userId);
                 loadCategoryList(from, to, userId);
             }
-        }
+        });
 
-        catch (SQLException exception) {
+        task.setOnFailed(event -> {
             showError("Помилка при завантаженні даних для аналітики");
-        }
+        });
+
+        TaskExecutor.getPool().submit(task);
     }
 
     @FXML public void initialize() {

@@ -3,6 +3,8 @@ package com.purchasehistorysystem.controller;
 import com.purchasehistorysystem.App;
 import com.purchasehistorysystem.service.UserService;
 import com.purchasehistorysystem.util.AuthUtils;
+import com.purchasehistorysystem.util.TaskExecutor;
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
@@ -36,51 +38,64 @@ public class RegisterController {
         String checkPassword = showCheckPasswordToggle.isSelected() ? checkPasswordTextField.getText() : checkPasswordField.getText();
         String email = emailTextField.getText();
 
-        try {
-            userService.registerUser(username, password, checkPassword, email);
-            App.setRoot("LoginView");
-        }
+        Task<Void> task = new Task<>() {
+            @Override
+            protected Void call() throws SQLException {
+                userService.registerUser(username, password, checkPassword, email);
+                return null;
+            }
+        };
 
-        catch (SQLException exception) {
-            errorLabel.setText("Помилка при реєстрації");
-        }
-
-        catch (IOException exception) {
-            errorLabel.setText("Помилка при зміні вікна");
-        }
-
-        catch (IllegalArgumentException exception) {
-            String errorMessage = exception.getMessage();
-            errorLabel.setText(errorMessage);
-
-            if (errorMessage.contains("Заповніть усі поля")) {
-                fillAllFieldsError();
+        task.setOnSucceeded(event -> {
+            try {
+                App.setRoot("LoginView");
             }
 
-            if (errorMessage.contains("Ім'я користувача не має бути меншим за 4 символи")) {
-                usernameError();
+            catch (IOException exception) {
+                errorLabel.setText("Помилка при зміні вікна");
+            }
+        });
+
+        task.setOnFailed(event -> {
+            if (task.getException() instanceof IllegalArgumentException) {
+                String errorMessage = task.getException().getMessage();
+                errorLabel.setText(errorMessage);
+
+                if (errorMessage.contains("Заповніть усі поля")) {
+                    fillAllFieldsError();
+                }
+
+                if (errorMessage.contains("Ім'я користувача не має бути меншим за 4 символи")) {
+                    usernameError();
+                }
+
+                if (errorMessage.contains("Ім'я користувача не має бути більшим за 30 символів")) {
+                    usernameError();
+                }
+
+                if (errorMessage.contains("Неправильний формат пошти")) {
+                    emailError();
+                }
+
+                if (errorMessage.contains("Ім'я користувача або пошта вже зайняте")) {
+                    usernameOrEmailTakenError();
+                }
+
+                if (errorMessage.contains("Пароль має містити мінімум 8 символів, велику літеру та хоча б одну цифру/символ")) {
+                    incorrectPasswordError();
+                }
+
+                if (errorMessage.contains("Паролі не збігаються")) {
+                    passwordMismatchError();
+                }
             }
 
-            if (errorMessage.contains("Неправильний формат пошти")) {
-                emailError();
+            else {
+                errorLabel.setText("Помилка при реєстрації");
             }
+        });
 
-            if (errorMessage.contains("Ім'я користувача або пошта вже зайняте")) {
-                usernameOrEmailTakenError();
-            }
-
-            if (errorMessage.contains("Пароль має містити мінімум 8 символів, велику літеру та хоча б одну цифру/символ")) {
-                incorrectPasswordError();
-            }
-
-            if (errorMessage.contains("Паролі не збігаються")) {
-                passwordMismatchError();
-            }
-        }
-
-        catch (Exception exception) {
-            errorLabel.setText("Сталася помилка на нашій стороні");
-        }
+        TaskExecutor.getPool().submit(task);
     }
 
     @FXML private void onLoginLink() {

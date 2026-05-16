@@ -5,7 +5,9 @@ import com.purchasehistorysystem.model.User;
 import com.purchasehistorysystem.service.UserService;
 import com.purchasehistorysystem.util.AuthTokenStorage;
 import com.purchasehistorysystem.util.AuthUtils;
+import com.purchasehistorysystem.util.TaskExecutor;
 import com.purchasehistorysystem.util.UserSessionUtils;
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -33,8 +35,15 @@ public class LoginController {
         String email = emailTextField.getText().trim();
         String password = showPasswordToggle.isSelected() ? passwordTextField.getText() : passwordField.getText();
 
-        try {
-            User user = userService.loginUser(email, password);
+        Task<User> task = new Task<>() {
+            @Override
+            protected User call() throws SQLException {
+                return userService.loginUser(email, password);
+            }
+        };
+
+        task.setOnSucceeded(event -> {
+            User user = task.getValue();
 
             if (user != null) {
                 UserSessionUtils.setCurrentUser(user);
@@ -42,34 +51,61 @@ public class LoginController {
                 if (rememberMeCheckBox.isSelected()) {
                     String authToken = UserSessionUtils.generateAuthToken();
                     int userId = user.getId();
-                    userService.updateToken(userId, authToken);
-                    AuthTokenStorage.saveToken(authToken);
+
+                    Task<Void> authTokenTask = new Task<>() {
+                        @Override
+                        protected Void call() throws SQLException {
+                            userService.updateToken(userId, authToken);
+                            return null;
+                        }
+                    };
+
+                    authTokenTask.setOnSucceeded(authTokenEvent -> {
+                        try {
+                            AuthTokenStorage.saveToken(authToken);
+
+                        }
+
+                        catch (Exception exception) {
+                            errorLabel.setText("Не вдалося зберегти токен авторизації");
+                        }
+
+                        showWelcomeAlert(user.getUsername());
+                    });
+
+                    authTokenTask.setOnFailed(authTokenEvent -> {
+                        showWelcomeAlert(user.getUsername());
+                    });
+
+                    TaskExecutor.getPool().submit(authTokenTask);
                 }
 
-                showWelcomeAlert(user.getUsername());
-
+                else {
+                    showWelcomeAlert(user.getUsername());
+                }
             }
-        }
-        catch (SQLException exception) {
-            errorLabel.setText("Помилка під час авторизації");
-        }
+        });
 
-        catch (IllegalArgumentException exception) {
-            String errorMessage = exception.getMessage();
-            errorLabel.setText(errorMessage);
+        task.setOnFailed(event -> {
+            if (task.getException() instanceof IllegalArgumentException) {
+                String errorMessage = task.getException().getMessage();
+                errorLabel.setText(errorMessage);
 
-            if (errorMessage.contains("Заповніть усі поля")) {
-                fillAllFieldsError();
+                if (errorMessage.contains("Заповніть усі поля")) {
+                    fillAllFieldsError();
+                }
+
+                if (errorMessage.contains("Невірний логін або пароль")) {
+                    invalidLoginOrPassword();
+                }
             }
 
-            if (errorMessage.contains("Невірний логін або пароль")) {
-                invalidLoginOrPassword();
+            else {
+                errorLabel.setText("Помилка під час авторизації");
             }
-        }
+        });
 
-        catch (Exception exception) {
-            errorLabel.setText("Помилка сталася на нашій стороні");
-        }
+        TaskExecutor.getPool().submit(task);
     }
 
     @FXML private void onRegisterLink() {
