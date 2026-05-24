@@ -40,8 +40,13 @@
     -fx-font-size: 15px;
 }
 
+.chart-legend {
+    -fx-max-width: 300px;
+    -fx-wrap-text: true;
+}
+
 .chart-legend-item {
-    -fx-font-size: 15px;
+    -fx-font-size: 12px;
 }
 
 .axis {

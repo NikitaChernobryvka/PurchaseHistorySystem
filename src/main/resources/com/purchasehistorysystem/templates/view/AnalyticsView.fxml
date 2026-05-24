@@ -27,17 +27,17 @@
                 <PieChart fx:id="expensesPieChart" title="Витрати за категоріями" HBox.hgrow="ALWAYS"/>
                 <BarChart fx:id="expensesBarChart" title="Витрати по дням" HBox.hgrow="ALWAYS">
                     <xAxis>
-                        <CategoryAxis side="BOTTOM" label="Дні"/>
+                        <CategoryAxis side="BOTTOM" label="Дні" animated="false"/>
                     </xAxis>
 
                     <yAxis>
-                        <NumberAxis side="LEFT" label="Витрати" styleClass="y-axis-label-padding"/>
+                        <NumberAxis side="LEFT" label="Витрати" styleClass="y-axis-label-padding" animated="false"/>
                     </yAxis>
                 </BarChart>
 
                 <VBox spacing="8">
                     <Label>Покупки за категоріями</Label>
-                    <ListView fx:id="categoryCountList"/>
+                    <ListView fx:id="categoryCountList" prefHeight="300"/>
                 </VBox>
             </HBox>
 
