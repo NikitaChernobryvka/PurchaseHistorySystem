@@ -218,9 +218,21 @@ public class MainController {
         TaskExecutor.getPool().submit(task);
 
         rangeMinPriceField.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue.contains(",")) {
+                String correctedValue = newValue.replace(",", ".");
+                rangeMinPriceField.setText(correctedValue);
+                return;
+            }
+
             usePriceFilter();
         });
         rangeMaxPriceField.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue.contains(",")) {
+                String correctedValue = newValue.replace(",", ".");
+                rangeMaxPriceField.setText(correctedValue);
+                return;
+            }
+
             usePriceFilter();
         });
 
@@ -244,7 +256,9 @@ public class MainController {
     }
 
     private void usePriceFilter() {
-        applyFilters();
+        if (!filterUpdating) {
+            applyFilters();
+        }
     }
 
     private void applyFilters() {
@@ -281,6 +295,10 @@ public class MainController {
 
         catch (NumberFormatException exception) {
             if (categoryFilter.getScene() != null) {
+                filterUpdating = true;
+                rangeMaxPriceField.clear();
+                rangeMinPriceField.clear();
+                filterUpdating = false;
                 showError("Введені значення мають бути невід'ємними числами");
             }
         }

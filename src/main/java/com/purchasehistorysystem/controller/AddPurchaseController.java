@@ -71,6 +71,12 @@ public class AddPurchaseController {
 
     @FXML public void initialize() {
         loadCategories();
+        priceField.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue.contains(",")) {
+                String correctValue = newValue.replace(",", ".");
+                priceField.setText(correctValue);
+            }
+        });
     }
 
     @FXML public void onCancelButton() {
