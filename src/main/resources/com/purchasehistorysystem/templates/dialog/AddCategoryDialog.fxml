@@ -6,7 +6,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<VBox xmlns:fx="http://javafx.com/fxml" spacing="15"
+<VBox xmlns:fx="http://javafx.com/fxml" spacing="20"
       stylesheets="@../../styles/global.css, @../../styles/dialog.css"
       styleClass="vbox"
       fx:controller="com.purchasehistorysystem.controller.AddCategoryController">
@@ -21,12 +21,15 @@
     <HBox spacing="15">
         <Label>Іконка: </Label>
         <ComboBox promptText="Оберіть іконку" fx:id="categoryIconComboBox"/>
-        <Button onAction="#onDownloadIconButton">Завантажити нову</Button>
-        <Button onAction="#onDeleteIconButton">Видалити іконку зі списку</Button>
     </HBox>
 
+    <VBox spacing="15">
+        <Button onAction="#onDownloadIconButton">Завантажити нову</Button>
+        <Button onAction="#onDeleteIconButton" styleClass="delete-button">Видалити іконку зі списку</Button>
+    </VBox>
+
     <HBox spacing="15" styleClass="hbox-buttons" alignment="CENTER">
-        <Button onAction="#onCancelButton">Скасувати</Button>
+        <Button onAction="#onCancelButton" styleClass="cancel-button">Скасувати</Button>
         <Button onAction="#onSaveButton">Зберегти</Button>
     </HBox>
 

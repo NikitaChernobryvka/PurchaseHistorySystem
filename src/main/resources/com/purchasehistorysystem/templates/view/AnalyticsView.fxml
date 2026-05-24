@@ -17,7 +17,7 @@
             <Label>Аналітика за:</Label>
             <ComboBox promptText="Місяць" fx:id="monthComboBox"/>
             <ComboBox promptText="Рік" fx:id="yearComboBox"/>
-            <Button onAction="#update">Оновити</Button>
+            <Button onAction="#update" styleClass="secondary-button">Оновити</Button>
         </HBox>
     </top>
 
@@ -46,8 +46,8 @@
     </center>
 
     <bottom>
-        <HBox alignment="CENTER" styleClass="hbox-bottom">
-            <Button onAction="#printAnalyticsButton">Роздрукувати</Button>
+        <HBox alignment="CENTER" styleClass="hbox-bottom" spacing="20">
+            <Button onAction="#printAnalyticsButton" styleClass="secondary-button">Роздрукувати</Button>
             <Button onAction="#toHomeButton">Головна</Button>
         </HBox>
     </bottom>

@@ -16,19 +16,19 @@
                 <ComboBox promptText="Категорія" fx:id="categoryFilter" onAction="#onCategoryFilter"/>
 
                 <StackPane alignment="CENTER_RIGHT">
-                    <DatePicker promptText="Оберіть першу дату" fx:id="rangeFromDate" onAction="#onDateFilter" editable="false"/>
+                    <DatePicker promptText="Початкова дата" fx:id="rangeFromDate" onAction="#onDateFilter" editable="false"/>
                     <Button fx:id="clearFromDateButton" onAction="#clearFromDate" visible="false" styleClass="clear-date-filter-button">X</Button>
                 </StackPane>
 
                 <StackPane alignment="CENTER_RIGHT">
-                    <DatePicker promptText="Оберіть другу дату" fx:id="rangeToDate" onAction="#onDateFilter" editable="false"/>
+                    <DatePicker promptText="Кінцева дата" fx:id="rangeToDate" onAction="#onDateFilter" editable="false"/>
                     <Button fx:id="clearToDateButton" onAction="#clearToDate" visible="false" styleClass="clear-date-filter-button">X</Button>
                 </StackPane>
 
-                <TextField promptText="Введіть першу ціну" fx:id="rangeMinPriceField"/>
-                <TextField promptText="Введіть другу ціну" fx:id="rangeMaxPriceField"/>
+                <TextField promptText="Мінімальна ціна" fx:id="rangeMinPriceField"/>
+                <TextField promptText="Максимальна ціна" fx:id="rangeMaxPriceField"/>
 
-                <Button onAction="#clearAllFilters">Очистити</Button>
+                <Button onAction="#clearAllFilters" styleClass="clear-button">Очистити</Button>
             </HBox>
         </VBox>
     </top>
@@ -44,9 +44,9 @@
     <bottom>
         <HBox alignment="CENTER" spacing="30" styleClass="hbox-bottom">
             <Button onAction="#onAddButton">Додати</Button>
-            <Button onAction="#onDeleteButton">Видалити</Button>
-            <Button onAction="#onLinkToAnalytics">Аналітика</Button>
-            <Button onAction="#onLogoutButton">Вийти із системи</Button>
+            <Button onAction="#onDeleteButton" styleClass="delete-button">Видалити</Button>
+            <Button onAction="#onLinkToAnalytics" styleClass="secondary-button">Аналітика</Button>
+            <Button onAction="#onLogoutButton" styleClass="logout-button">Вийти із системи</Button>
         </HBox>
     </bottom>
 </BorderPane>

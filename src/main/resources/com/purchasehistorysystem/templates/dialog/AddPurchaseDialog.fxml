@@ -21,8 +21,11 @@
     <HBox spacing="15">
         <Label>Категорія: </Label>
         <ComboBox promptText="Оберіть категорію" fx:id="categoryComboBox"/>
-        <Button onAction="#onAddCategoryButton">+</Button>
-        <Button onAction="#onDeleteCategoryButton">-</Button>
+    </HBox>
+
+    <HBox spacing="15">
+        <Button onAction="#onAddCategoryButton">Створити власну категорію</Button>
+        <Button onAction="#onDeleteCategoryButton" styleClass="delete-button">Видалити власну категорію</Button>
     </HBox>
 
     <HBox spacing="15">
@@ -36,7 +39,7 @@
     </HBox>
 
     <HBox spacing="15" styleClass="hbox-buttons" alignment="CENTER">
-        <Button onAction="#onCancelButton">Скасувати</Button>
+        <Button onAction="#onCancelButton" styleClass="cancel-button">Скасувати</Button>
         <Button onAction="#onSaveButton">Зберегти</Button>
     </HBox>
 

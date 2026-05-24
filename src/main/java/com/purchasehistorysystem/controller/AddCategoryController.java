@@ -5,10 +5,14 @@ import com.purchasehistorysystem.util.TaskExecutor;
 import com.purchasehistorysystem.util.UserSessionUtils;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.stage.FileChooser;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.io.*;
@@ -145,12 +149,40 @@ public class AddCategoryController {
     @FXML public void onDeleteIconButton() {
         clearFieldsStyle();
 
+
+
         int userId = UserSessionUtils.getCurrentUser().getId();
         String selectedIcon = categoryIconComboBox.getValue();
 
         if (selectedIcon == null || selectedIcon.isEmpty()) {
             errorLabel.setText("Іконку для видалення не обрано");
             noIconSelected();
+            return;
+        }
+
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com/purchasehistorysystem/components/alert/DeleteIconAlert.fxml"));
+
+            Parent root = fxmlLoader.load();
+
+            DeleteIconAlertController deleteIconAlertController = fxmlLoader.getController();
+
+            Stage deleteIconStage = new Stage();
+            Scene scene = new Scene(root);
+            deleteIconStage.setScene(scene);
+            deleteIconStage.initModality(Modality.WINDOW_MODAL);
+            deleteIconStage.initOwner(nameField.getScene().getWindow());
+            deleteIconStage.setTitle("Видалення іконки");
+
+            deleteIconStage.showAndWait();
+
+            if (!deleteIconAlertController.isConfirm()) {
+                return;
+            }
+        }
+
+        catch (IOException exception) {
+            errorLabel.setText("Помилка при відкритті вікна");
             return;
         }
 

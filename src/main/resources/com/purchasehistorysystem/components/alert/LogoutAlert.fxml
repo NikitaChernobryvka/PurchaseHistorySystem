@@ -18,9 +18,8 @@
 
     <Label>Ви впевнені, що хочете вийти?</Label>
 
-    <HBox spacing="10">
-        <Button fx:id="cancelButton" onAction="#onCancelButton"
-                styleClass="button-alert">Скасувати</Button>
-        <Button onAction="#onExitButton" styleClass="button-alert">Вийти</Button>
+    <HBox spacing="10" alignment="CENTER">
+        <Button fx:id="cancelButton" onAction="#onCancelButton" styleClass="cancel-button">Скасувати</Button>
+        <Button onAction="#onExitButton">Вийти</Button>
     </HBox>
 </VBox>

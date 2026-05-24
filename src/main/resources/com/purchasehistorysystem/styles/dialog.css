@@ -31,4 +31,5 @@
 
 .combo-box {
     -fx-font-size: 15px;
+    -fx-pref-width: 200px;
 }

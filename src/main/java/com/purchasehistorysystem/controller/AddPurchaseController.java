@@ -149,6 +149,10 @@ public class AddPurchaseController {
                 if (errorMessage.contains("Вартість не може перевищувати значення 999999.99")) {
                     priceError();
                 }
+
+                if (errorMessage.contains("Кількість має бути в межах від 0 до 1000")) {
+                    amountError();
+                }
             }
 
             else {
@@ -176,7 +180,8 @@ public class AddPurchaseController {
             dialogStage.setTitle("Створити категорію");
             dialogStage.initModality(Modality.APPLICATION_MODAL);
             dialogStage.setScene(dialogScene);
-            dialogStage.setWidth(500);
+            dialogStage.setWidth(350);
+            
             dialogStage.showAndWait();
 
             loadCategories(selectedCategoryId);
@@ -204,7 +209,7 @@ public class AddPurchaseController {
             dialogStage.setTitle("Видалити категорію");
             dialogStage.initModality(Modality.APPLICATION_MODAL);
             dialogStage.setScene(dialogScene);
-            dialogStage.setWidth(500);
+            dialogStage.setWidth(525);
             dialogStage.showAndWait();
 
             loadCategories(selectedCategoryId);

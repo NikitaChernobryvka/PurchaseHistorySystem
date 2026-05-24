@@ -333,7 +333,7 @@ public class MainController {
             dialogStage.setTitle("Додати покупку");
             dialogStage.initModality(Modality.APPLICATION_MODAL);
             dialogStage.setScene(dialogScene);
-            dialogStage.setWidth(500);
+            dialogStage.setWidth(475);
             dialogStage.showAndWait();
 
             purchaseHistory.getChildren().clear();
@@ -395,6 +395,7 @@ public class MainController {
             logoutStage.initModality(Modality.WINDOW_MODAL);
             logoutStage.initOwner(categoryFilter.getScene().getWindow());
             logoutStage.setTitle("Вихід із системи");
+            logoutStage.setWidth(275);
 
             logoutStage.showAndWait();
 

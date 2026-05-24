@@ -10,9 +10,9 @@
         xmlns:fx="http://javafx.com/fxml"
         stylesheets="@../../styles/global.css, @../../styles/alert.css"
         styleClass="alert-container" spacing="10"
-        fx:controller="com.purchasehistorysystem.controller.DeleteCategoryAlertController">
+        fx:controller="com.purchasehistorysystem.controller.DeleteIconAlertController">
 
-    <Label>Ви впевнені, що хочете видалити категорію?</Label>
+    <Label>Ви впевнені, що хочете видалити іконку?</Label>
 
     <HBox spacing="10" alignment="CENTER">
         <Button fx:id="cancelButton" onAction="#onCancelButton" styleClass="cancel-button">Скасувати</Button>

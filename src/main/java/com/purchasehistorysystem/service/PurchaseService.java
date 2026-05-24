@@ -26,6 +26,10 @@ public class PurchaseService {
             throw new IllegalArgumentException("Вартість та кількість мають бути більшими за нуль");
         }
 
+        if (amount > 1000) {
+            throw new IllegalArgumentException("Кількість має бути в межах від 0 до 1000");
+        }
+
         if (price > 999999.99) {
             throw new IllegalArgumentException("Вартість не може перевищувати значення 999999.99");
         }

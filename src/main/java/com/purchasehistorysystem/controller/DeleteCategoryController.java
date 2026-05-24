@@ -189,8 +189,10 @@ public class DeleteCategoryController {
                 TaskExecutor.getPool().submit(task);
             }
         }
+
         catch (IOException exception) {
             errorLabel.setText("Помилка при відкритті вікна");
+            return;
         }
     }
 
