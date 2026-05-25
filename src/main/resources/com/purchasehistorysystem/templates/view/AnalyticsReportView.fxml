@@ -16,10 +16,10 @@
     </VBox>
 
     <VBox styleClass="charts-container">
-        <ImageView fx:id="expensesPieChart" fitWidth="500" fitHeight="260" preserveRatio="true"/>
-        <ImageView fx:id="expensesBarChart" fitWidth="500" fitHeight="260" preserveRatio="true"/>
+        <ImageView fx:id="expensesPieChart" fitWidth="500" fitHeight="260" preserveRatio="true" translateX="-20"/>
+        <ImageView fx:id="expensesBarChart" fitWidth="500" fitHeight="260" preserveRatio="true" translateX="-20"/>
     </VBox>
 
-    <Label styleClass="data-title">Кількість покупок за категоріями</Label>
+    <Label styleClass="data-title" translateX="-20">Кількість покупок за категоріями</Label>
     <FlowPane styleClass="flow-pane" fx:id="categoryCountList"/>
 </VBox>

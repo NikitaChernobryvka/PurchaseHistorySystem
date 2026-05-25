@@ -1,8 +1,6 @@
 package com.purchasehistorysystem.util;
 
-import com.github.javakeyring.BackendNotSupportedException;
 import com.github.javakeyring.Keyring;
-import com.github.javakeyring.PasswordAccessException;
 
 public class AuthTokenStorage {
     private static final String SERVICE = "PurchaseHistorySystem";

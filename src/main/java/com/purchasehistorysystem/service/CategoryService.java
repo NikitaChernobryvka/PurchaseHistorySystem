@@ -50,6 +50,12 @@ public class CategoryService {
             throw new IllegalArgumentException("Така категорія вже існує");
         }
 
+        List<Category> categoryCount = getCategoriesForSelection();
+
+        if (categoryCount.size() >= 12) {
+            throw new IllegalArgumentException("Максимум можна створити 8 категорій");
+        }
+
         String iconPathDatabase = "/com/purchasehistorysystem/icons/custom/user_" + userId + "/" + iconName;
 
         Category category = new Category(0, name, iconPathDatabase, userId, "Custom");
