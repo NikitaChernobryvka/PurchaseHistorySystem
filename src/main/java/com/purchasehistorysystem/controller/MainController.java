@@ -167,8 +167,8 @@ public class MainController {
                     if (image != null) {
                         ImageView imageView = new ImageView(image);
 
-                        imageView.setFitHeight(20);
-                        imageView.setFitWidth(20);
+                        imageView.setFitHeight(25);
+                        imageView.setFitWidth(25);
 
                         imageView.setPreserveRatio(true);
 
@@ -332,6 +332,7 @@ public class MainController {
 
             dialogStage.setTitle("Додати покупку");
             dialogStage.initModality(Modality.APPLICATION_MODAL);
+            dialogStage.setResizable(false);
             dialogStage.setScene(dialogScene);
             dialogStage.setWidth(475);
             dialogStage.showAndWait();

@@ -188,6 +188,10 @@ public class DeleteCategoryController {
 
                 TaskExecutor.getPool().submit(task);
             }
+
+            else {
+                errorLabel.setText("");
+            }
         }
 
         catch (IOException exception) {

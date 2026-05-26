@@ -46,6 +46,10 @@ public class CategoryService {
     public void addCustomCategory(String name, String iconName) throws SQLException, IllegalArgumentException {
         int userId = UserSessionUtils.getCurrentUser().getId();
 
+        if (name.length() > 20) {
+            throw new IllegalArgumentException("Назва не може перевищувати 20 символів");
+        }
+
         if (requiredCustomCategoryExist(name, userId)) {
             throw new IllegalArgumentException("Така категорія вже існує");
         }
@@ -53,7 +57,7 @@ public class CategoryService {
         List<Category> categoryCount = getCategoriesForSelection();
 
         if (categoryCount.size() >= 12) {
-            throw new IllegalArgumentException("Максимум можна створити 8 категорій");
+            throw new IllegalArgumentException("Максимум можна створити 5 категорій");
         }
 
         String iconPathDatabase = "/com/purchasehistorysystem/icons/custom/user_" + userId + "/" + iconName;

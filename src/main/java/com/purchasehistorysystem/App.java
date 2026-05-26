@@ -13,6 +13,7 @@ import javafx.scene.Scene;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.Locale;
 
 public class App extends Application {
     private static Scene scene;
@@ -20,6 +21,8 @@ public class App extends Application {
 
     @Override
     public void start(Stage stage) throws IOException {
+        Locale.setDefault(Locale.forLanguageTag("uk"));
+
         String authToken = AuthTokenStorage.loadToken();
 
         if (authToken != null) {
@@ -43,7 +46,7 @@ public class App extends Application {
             }
         }
 
-        FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource("/com/purchasehistorysystem/templates/view/RegisterView.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource("/com/purchasehistorysystem/templates/view/LoginView.fxml"));
         Parent root = fxmlLoader.load();
         scene = new Scene(root);
         stage.setTitle("Історія покупок");

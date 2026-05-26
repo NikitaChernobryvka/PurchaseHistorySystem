@@ -41,13 +41,13 @@
                 </VBox>
             </HBox>
 
-            <Label fx:id="emptyPlaceholder">За даний період дані відсутні</Label>
+            <Label fx:id="emptyPlaceholder" visible="false">За даний період дані відсутні</Label>
         </StackPane>
     </center>
 
     <bottom>
         <HBox alignment="CENTER" styleClass="hbox-bottom" spacing="20">
-            <Button onAction="#printAnalyticsButton" styleClass="secondary-button">Роздрукувати</Button>
+            <Button onAction="#printAnalyticsButton" styleClass="secondary-button">Експортувати</Button>
             <Button onAction="#toHomeButton">Головна</Button>
         </HBox>
     </bottom>

@@ -179,6 +179,7 @@ public class AddPurchaseController {
 
             dialogStage.setTitle("Створити категорію");
             dialogStage.initModality(Modality.APPLICATION_MODAL);
+            dialogStage.setResizable(false);
             dialogStage.setScene(dialogScene);
             dialogStage.setWidth(350);
             
@@ -208,6 +209,7 @@ public class AddPurchaseController {
 
             dialogStage.setTitle("Видалити категорію");
             dialogStage.initModality(Modality.APPLICATION_MODAL);
+            dialogStage.setResizable(false);
             dialogStage.setScene(dialogScene);
             dialogStage.setWidth(525);
             dialogStage.showAndWait();

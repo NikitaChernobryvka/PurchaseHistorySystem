@@ -82,6 +82,7 @@ public class AddCategoryController {
 
     @FXML private void onDownloadIconButton() {
         clearFieldsStyle();
+        errorLabel.setText("");
 
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Оберіть іконку (PNG, JPG або JPEG)");
@@ -136,6 +137,7 @@ public class AddCategoryController {
             if (task.getException() instanceof IllegalArgumentException) {
                 String errorMessage = task.getException().getMessage();
                 errorLabel.setText(errorMessage);
+                fillNameFieldError();
             }
 
             else {
@@ -177,6 +179,7 @@ public class AddCategoryController {
             deleteIconStage.showAndWait();
 
             if (!deleteIconAlertController.isConfirm()) {
+                errorLabel.setText("");
                 return;
             }
         }
@@ -233,6 +236,10 @@ public class AddCategoryController {
     private void fillAllFieldsError() {
         nameField.getStyleClass().add("error-field");
         categoryIconComboBox.getStyleClass().add("combo-box-error");
+    }
+
+    private void fillNameFieldError() {
+        nameField.getStyleClass().add("error-field");
     }
 
     private void clearFieldsStyle() {
