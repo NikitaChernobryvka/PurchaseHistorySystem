@@ -6,15 +6,10 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<?import java.net.URL?>
 <VBox xmlns:fx="http://javafx.com/fxml"
       fx:controller="com.purchasehistorysystem.controller.LogoutAlertController"
+      stylesheets="@../../styles/global.css, @../../styles/alert.css"
       styleClass="alert-container" spacing="10">
-
-    <stylesheets>
-        <URL value="@../../styles/global.css"/>
-        <URL value="@../../styles/alert.css"/>
-    </stylesheets>
 
     <Label>Ви впевнені, що хочете вийти?</Label>
 

@@ -151,6 +151,7 @@ public class LoginController {
 
             Stage welcomeAlertStage = new Stage();
             Scene scene = new Scene(root);
+            welcomeAlertStage.setResizable(false);
             welcomeAlertStage.setScene(scene);
             welcomeAlertStage.initModality(Modality.APPLICATION_MODAL);
             welcomeAlertStage.initOwner(emailTextField.getScene().getWindow());

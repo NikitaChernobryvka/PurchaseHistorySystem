@@ -392,6 +392,7 @@ public class MainController {
 
             Stage logoutStage = new Stage();
             Scene scene = new Scene(root);
+            logoutStage.setResizable(false);
             logoutStage.setScene(scene);
             logoutStage.initModality(Modality.WINDOW_MODAL);
             logoutStage.initOwner(categoryFilter.getScene().getWindow());
@@ -412,14 +413,7 @@ public class MainController {
                 };
 
                 task.setOnSucceeded(event -> {
-                    try {
-                        AuthTokenStorage.clearToken();
-                    }
-
-                    catch (Exception exception) {
-                        showError("Помилка при видаленні токену");
-                    }
-
+                    AuthTokenStorage.clearToken();
                     UserSessionUtils.cleanSession();
 
                     try {

@@ -241,7 +241,7 @@ public class AnalyticsController {
             expensesBarChart.applyCss();
             expensesBarChart.layout();
 
-            String selectedMonth = monthComboBox.getSelectionModel().getSelectedItem();
+            String selectedMonth = monthComboBox.getSelectionModel().getSelectedItem().toLowerCase();
             int selectedYear = yearComboBox.getValue();
 
             WritableImage pieChartSnapshot = expensesPieChart.snapshot(null, null);

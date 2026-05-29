@@ -20,7 +20,13 @@ public class AuthTokenStorage {
         }
     }
 
-    public static void clearToken() throws Exception {
-        Keyring.create().deletePassword(SERVICE, ACCOUNT);
+    public static void clearToken() {
+        try {
+            Keyring.create().deletePassword(SERVICE, ACCOUNT);
+        }
+
+        catch (Exception exception) {
+            return;
+        }
     }
 }
